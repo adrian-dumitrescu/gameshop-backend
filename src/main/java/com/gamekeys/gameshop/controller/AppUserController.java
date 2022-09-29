@@ -32,7 +32,7 @@ import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 @RestController
 //@RequiredArgsConstructor
 @AllArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping( "/api/user")
 //@RequestMapping({"/api","/api/user"})
 @CrossOrigin(origins = "http://localhost:4200/")
 public class AppUserController extends ExceptionHandling {
@@ -75,9 +75,9 @@ public class AppUserController extends ExceptionHandling {
 //        return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
 //    }
 
-    @GetMapping(path = "/image/profile/{username}", produces = IMAGE_JPEG_VALUE)
-    public byte[] getTempProfileImage(@PathVariable("username") String username) throws IOException {
-        URL url = new URL(TEMP_PROFILE_IMAGE_BASE_URL + username);
+    @GetMapping(path = "/image/profile/{email}", produces = IMAGE_JPEG_VALUE)
+    public byte[] getTempProfileImage(@PathVariable("email") String email) throws IOException {
+        URL url = new URL(TEMP_PROFILE_IMAGE_BASE_URL + email);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try (InputStream inputStream = url.openStream()) {
             int bytesRead;

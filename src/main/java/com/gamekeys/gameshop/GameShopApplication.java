@@ -4,11 +4,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
+import java.io.File;
+
+import static com.gamekeys.gameshop.constant.FileConstant.USER_FOLDER;
+
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 public class GameShopApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GameShopApplication.class, args);
+        new File(USER_FOLDER).mkdirs(); // once the application starts it will create the folder
     }
 
 

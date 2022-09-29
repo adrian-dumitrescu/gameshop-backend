@@ -30,11 +30,10 @@ public class BeanConfiguration {
 
         return args -> {
 
-
-            AppRole ADMIN = new AppRole(null, Role.ROLE_ADMIN);
             AppRole USER = new AppRole(null, Role.ROLE_USER);
-
+            AppRole ADMIN = new AppRole(null, Role.ROLE_ADMIN);
             appRoleRepository.saveAll(List.of(ADMIN, USER));
+
             appUserService.registerUser(new AppUserDto("Ioana", "Marin", "ioana.marin@gmail.com", "ioanaA94!"));
 
         };

@@ -57,7 +57,8 @@ public class WebSecurityConfig {
         // We add Cross Origin resource Sharing because we don't want anyone from any URL to be able to connect to our API
         // We want ony a specific list to be able to do that. Disabling it will allow anyone from any domain to send a request to our application
         // and the application will try to process it.
-        http.csrf().disable().cors().and()
+        http.csrf().disable().cors()
+                .and()
                 .sessionManagement().sessionCreationPolicy(STATELESS) // With JWT, we don't need to keep track of who is logged in, so we can set STATELESS instead of STATEFUL
                 .and()
                 .authorizeRequests().antMatchers(PUBLIC_URLS).permitAll() // We are telling the app the list of URLs that we are allowing the user to access without being authenticated

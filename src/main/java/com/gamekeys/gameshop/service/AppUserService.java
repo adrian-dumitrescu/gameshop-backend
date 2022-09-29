@@ -7,6 +7,7 @@ import com.gamekeys.gameshop.domain.user.AppUserDetails;
 import com.gamekeys.gameshop.domain.user.AppUserDto;
 import com.gamekeys.gameshop.exception.domain.EmailExistException;
 import com.gamekeys.gameshop.exception.domain.EntityNotFoundException;
+import com.gamekeys.gameshop.exception.domain.NotAnImageFileException;
 import com.gamekeys.gameshop.exception.domain.UserNotFoundException;
 import com.gamekeys.gameshop.mapper.AppUserMapper;
 import com.gamekeys.gameshop.repository.AppRoleRepository;
@@ -20,11 +21,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.gamekeys.gameshop.constant.FileConstant.DEFAULT_USER_IMAGE_PATH;
@@ -94,7 +99,7 @@ public class AppUserService implements UserDetailsService {
         appUserEntity.setJoinDate(new Date());
         appUserEntity.setIsEnabled(true);
         appUserEntity.setIsNotLocked(true);
-        //appUserEntity.setProfileImageUrl(getTemporaryProfileImageUrl(appUserEntity.getEmail()));
+        appUserEntity.setProfileImageUrl(getTemporaryProfileImageUrl(appUserEntity.getEmail()));
         appUserEntity.setRoles(Set.of(userRole));
         appUserRepository.save(appUserEntity);
 
@@ -159,10 +164,9 @@ public class AppUserService implements UserDetailsService {
     }
 
     private String getTemporaryProfileImageUrl(String email) {
-        //return ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/image/profile/temp").toUriString();
-        return ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH + email).toUriString();
+        return DEFAULT_USER_IMAGE_PATH + email;
+        //return ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH + email).toUriString(); // does not work when using CommandLineRunner
     }
-
 
 
     private AppUser validateNewUserEmail(String currentEmail, String newEmail) throws UserNotFoundException, EmailExistException {
@@ -191,5 +195,28 @@ public class AppUserService implements UserDetailsService {
     public AppUserDetails getUserDetails(String email) {
         AppUser loginUser = appUserRepository.findAppUserByEmail(email).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + email + " was found")));
         return new AppUserDetails(loginUser);
+    }
+
+    public AppUser createNewUser(String firstName, String lastName, String email, String password,String role, boolean isNotLocked, boolean isEnabled, MultipartFile profileImage) throws UserNotFoundException, EmailExistException, IOException, NotAnImageFileException {
+        validateNewUserEmail(EMPTY, email);
+        AppUser appUser = new AppUser();
+
+        appUser.setFirstName(firstName);
+        appUser.setLastName(lastName);
+        appUser.setJoinDate(new Date());
+        appUser.setEmail(email);
+        appUser.setPassword(passwordEncoder.encode(password));
+        appUser.setIsEnabled(isEnabled);
+        appUser.setIsNotLocked(isNotLocked);
+        appUser.setRoles((Set<AppRole>) appRoleRepository.findByRole(Role.ROLE_USER));
+        appUser.setProfileImageUrl(getTemporaryProfileImageUrl(email));
+        appUserRepository.save(appUser);
+        saveProfileImage(appUser, profileImage);
+
+        return appUser;
+    }
+
+    private void saveProfileImage(AppUser appUser, MultipartFile profileImage) {
+
     }
 }

@@ -23,7 +23,11 @@ public class SecurityConstant {
 
     public static final String OPTIONS_HTTP_METHOD = "OPTIONS";
 
+    public static final String SERVER_CONTEXT_PATH = "http://localhost:8080/";
+
     //public static final String[] PUBLIC_URLS = { "api/main", "api/user/login", "api/user/register", "api/user/image/**" };
 
-    public static final String[] PUBLIC_URLS = { "**" };
+    public static final String[] PUBLIC_URLS = { "/api/user/login/**", "/api/user/register", "/api/user/image/**" };
+
+    //public static final String[] PUBLIC_URLS = { "**" };
 }
