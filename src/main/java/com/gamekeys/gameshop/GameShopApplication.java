@@ -14,6 +14,7 @@ public class GameShopApplication {
     public static void main(String[] args) {
         SpringApplication.run(GameShopApplication.class, args);
         new File(USER_FOLDER).mkdirs(); // once the application starts it will create the folder
+       // compile ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310");
     }
 
 

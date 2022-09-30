@@ -22,19 +22,26 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.Date;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.gamekeys.gameshop.constant.FileConstant.DEFAULT_USER_IMAGE_PATH;
+import static com.gamekeys.gameshop.constant.FileConstant.*;
 import static com.gamekeys.gameshop.constant.UserImplConstant.*;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.springframework.http.MediaType.*;
 
 @Slf4j
 @Service
@@ -61,14 +68,14 @@ public class AppUserService implements UserDetailsService {
             throw new UsernameNotFoundException(NO_USER_FOUND_BY_USERNAME + email);
         } else {
             AppUser appUser = appUserOptional.get();
-            validateLoginAttempt(appUser);
+            bruteForceAttackCheck(appUser);
             appUserRepository.save(appUser);
             log.info(FOUND_USER_BY_EMAIL + email);
             return new AppUserDetails(appUser);
         }
     }
 
-    private void validateLoginAttempt(AppUser appUser) {
+    private void bruteForceAttackCheck(AppUser appUser) {
         if(appUser.getIsNotLocked()){ // If the account is not locked (false)
             if(loginAttemptService.hasExceededMaxAttempts(appUser.getEmail())){ // If the user attempted login more than 5 times
                 appUser.setIsNotLocked(false); // we lock the account
@@ -96,7 +103,7 @@ public class AppUserService implements UserDetailsService {
         validateNewUserEmail(EMPTY, appUserEntity.getEmail());
         log.info("Saving new user {} to the database", appUserEntity.getFirstName() + " " + appUserEntity.getLastName());
         appUserEntity.setPassword(passwordEncoder.encode(appUserEntity.getPassword()));
-        appUserEntity.setJoinDate(new Date());
+        appUserEntity.setJoinDate(LocalDate.now());
         appUserEntity.setIsEnabled(true);
         appUserEntity.setIsNotLocked(true);
         appUserEntity.setProfileImageUrl(getTemporaryProfileImageUrl(appUserEntity.getEmail()));
@@ -117,6 +124,61 @@ public class AppUserService implements UserDetailsService {
         //AppRole userRole = new AppRole(Role.ROLE_USER);
     }
 
+    public AppUserDto createNewUser(String firstName, String lastName, String email, String password, Role role, boolean isNotLocked, boolean isEnabled) throws UserNotFoundException, EmailExistException, IOException {
+        validateNewUserEmail(EMPTY, email);
+        AppUser appUser = new AppUser();
+        AppRole userRole = appRoleRepository.findByRole(role);
+        //userRole.setRole(role);
+
+        appUser.setFirstName(firstName);
+        appUser.setLastName(lastName);
+        appUser.setJoinDate(LocalDate.now());
+        appUser.setEmail(email);
+        appUser.setPassword(passwordEncoder.encode(password));
+        appUser.setIsEnabled(isEnabled);
+        appUser.setIsNotLocked(isNotLocked);
+        //appUser.setRoles((Set<AppRole>) appRoleRepository.findByRole(Role.ROLE_USER));
+        appUser.setRoles(Set.of(userRole));
+        appUser.setProfileImageUrl(getTemporaryProfileImageUrl(email));
+        appUserRepository.save(appUser);
+        //saveProfileImage(appUser, profileImage);
+
+        return appUserMapper.convertToDto(appUser);
+    }
+
+    public AppUserDto updateUser(String currentEmail, String newFirstName, String newLastName, String newEmail, MultipartFile profileImage) throws UserNotFoundException, EmailExistException, IOException, NotAnImageFileException {
+        AppUser currentUser = validateNewUserEmail(currentEmail, newEmail);
+        currentUser.setFirstName(newFirstName);
+        currentUser.setLastName(newLastName);
+        currentUser.setEmail(newEmail);
+        appUserRepository.save(currentUser);
+        saveProfileImage(currentUser, profileImage);
+        return appUserMapper.convertToDto(currentUser);
+    }
+
+    private void saveProfileImage(AppUser user, MultipartFile profileImage) throws IOException, NotAnImageFileException {
+        if (profileImage != null) {
+            if (!Arrays.asList(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, IMAGE_GIF_VALUE).contains(profileImage.getContentType())) {
+                throw new NotAnImageFileException(profileImage.getOriginalFilename() + NOT_AN_IMAGE_FILE);
+            }
+            Path userFolder = Paths.get(USER_FOLDER + user.getEmail()).toAbsolutePath().normalize();
+            if (!Files.exists(userFolder)) {
+                Files.createDirectories(userFolder);
+                log.info(DIRECTORY_CREATED + userFolder);
+            }
+            Files.deleteIfExists(Paths.get(userFolder + user.getEmail() + DOT + JPG_EXTENSION));
+            Files.copy(profileImage.getInputStream(), userFolder.resolve(user.getEmail() + DOT + JPG_EXTENSION), REPLACE_EXISTING);
+            user.setProfileImageUrl(buildProfileImageUrl(user.getEmail()));
+            appUserRepository.save(user);
+            log.info(FILE_SAVED_IN_FILE_SYSTEM + profileImage.getOriginalFilename());
+        }
+    }
+
+    private String buildProfileImageUrl(String email) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath().path(USER_IMAGE_PATH + email + FORWARD_SLASH
+                + email + DOT + JPG_EXTENSION).toUriString();
+    }
+
     public AppUserDto findAppUserByEmail(String email) {
         //AppUser appUser = appUserRepository.findAppUserByEmailAndPassword(email, password).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + email + " and " + password + " was found")));
         AppUser appUser = appUserRepository.findAppUserByEmail(email).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + email + " was found")));
@@ -128,12 +190,12 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.findAll().stream().map(c -> appUserMapper.convertToDto(c)).collect(Collectors.toList());
     }
 
-    public AppUserDto updateUser(AppUserDto appUserDto) {
-        // Update user by id:
-        AppUser appUserEntity = appUserRepository.findAppUserByEmail(appUserDto.getEmail()).orElseThrow(() -> new EntityNotFoundException(String.format("User with email {} does not exist.", appUserDto.getEmail())));
-        appUserRepository.save(appUserEntity);
-        return appUserMapper.convertToDto(appUserEntity);
-    }
+//    public AppUserDto updateUser(AppUserDto appUserDto) {
+//        // Update user by id:
+//        AppUser appUserEntity = appUserRepository.findAppUserByEmail(appUserDto.getEmail()).orElseThrow(() -> new EntityNotFoundException(String.format("User with email {} does not exist.", appUserDto.getEmail())));
+//        appUserRepository.save(appUserEntity);
+//        return appUserMapper.convertToDto(appUserEntity);
+//    }
 
     public AppUserDto findUserById(Long id) {
         AppUser appUser = appUserRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("No user with id " + id + " was found")));
@@ -197,26 +259,6 @@ public class AppUserService implements UserDetailsService {
         return new AppUserDetails(loginUser);
     }
 
-    public AppUser createNewUser(String firstName, String lastName, String email, String password,String role, boolean isNotLocked, boolean isEnabled, MultipartFile profileImage) throws UserNotFoundException, EmailExistException, IOException, NotAnImageFileException {
-        validateNewUserEmail(EMPTY, email);
-        AppUser appUser = new AppUser();
 
-        appUser.setFirstName(firstName);
-        appUser.setLastName(lastName);
-        appUser.setJoinDate(new Date());
-        appUser.setEmail(email);
-        appUser.setPassword(passwordEncoder.encode(password));
-        appUser.setIsEnabled(isEnabled);
-        appUser.setIsNotLocked(isNotLocked);
-        appUser.setRoles((Set<AppRole>) appRoleRepository.findByRole(Role.ROLE_USER));
-        appUser.setProfileImageUrl(getTemporaryProfileImageUrl(email));
-        appUserRepository.save(appUser);
-        saveProfileImage(appUser, profileImage);
 
-        return appUser;
-    }
-
-    private void saveProfileImage(AppUser appUser, MultipartFile profileImage) {
-
-    }
 }

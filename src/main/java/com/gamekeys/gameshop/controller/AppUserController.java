@@ -1,12 +1,14 @@
 package com.gamekeys.gameshop.controller;
 
+import com.gamekeys.gameshop.domain.enums.Role;
 import com.gamekeys.gameshop.domain.user.AppUserDetails;
 import com.gamekeys.gameshop.domain.user.AppUserDto;
 import com.gamekeys.gameshop.exception.ExceptionHandling;
 import com.gamekeys.gameshop.exception.domain.EmailExistException;
+import com.gamekeys.gameshop.exception.domain.NotAnImageFileException;
 import com.gamekeys.gameshop.exception.domain.UserNotFoundException;
-import com.gamekeys.gameshop.token.JWTTokenProvider;
 import com.gamekeys.gameshop.service.AppUserService;
+import com.gamekeys.gameshop.token.JWTTokenProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
@@ -26,13 +29,14 @@ import java.util.List;
 
 import static com.gamekeys.gameshop.constant.FileConstant.TEMP_PROFILE_IMAGE_BASE_URL;
 import static com.gamekeys.gameshop.constant.SecurityConstant.JWT_TOKEN_HEADER;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 @Slf4j
 @RestController
 //@RequiredArgsConstructor
 @AllArgsConstructor
-@RequestMapping( "/api/user")
+@RequestMapping("/api/user")
 //@RequestMapping({"/api","/api/user"})
 @CrossOrigin(origins = "http://localhost:4200/")
 public class AppUserController extends ExceptionHandling {
@@ -41,8 +45,6 @@ public class AppUserController extends ExceptionHandling {
     private final AppUserService appUserService;
     private JWTTokenProvider jwtTokenProvider;
     private AuthenticationManager authenticationManager;
-
-    // hello world
 
     @PostMapping("/register") //former create
     public ResponseEntity<AppUserDto> registerUser(@RequestBody @Valid AppUserDto appUserDto) throws UserNotFoundException, EmailExistException, MessagingException {
@@ -75,6 +77,30 @@ public class AppUserController extends ExceptionHandling {
 //        return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
 //    }
 
+    @PostMapping("/create")
+    public ResponseEntity<AppUserDto> addNewUser(@RequestParam("firstName") String firstName,
+                                                 @RequestParam("lastName") String lastName,
+                                                 @RequestParam("username") String username,
+                                                 @RequestParam("email") String email,
+                                                 @RequestParam("role") String role,
+                                                 @RequestParam("isActive") String isActive,
+                                                 @RequestParam("isNonLocked") String isNonLocked) throws UserNotFoundException, EmailExistException, IOException {
+        AppUserDto newUser = appUserService.createNewUser(firstName, lastName, username, email, Role.valueOf(role), Boolean.parseBoolean(isNonLocked), Boolean.parseBoolean(isActive));
+        return new ResponseEntity<>(newUser, OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<AppUserDto> updateUser(@RequestParam("firstName") String currentEmail,
+                                                 @RequestParam("firstName") String firstName,
+                                                 @RequestParam("lastName") String lastName,
+                                                 @RequestParam("email") String newEmail,
+                                                 @RequestParam(value = "profileImage", required = false)
+                                                 MultipartFile profileImage) throws UserNotFoundException, EmailExistException, IOException, NotAnImageFileException {
+        AppUserDto updateUser = appUserService.updateUser(currentEmail, firstName, lastName, newEmail, profileImage);
+        return new ResponseEntity<>(updateUser, HttpStatus.OK);
+    }
+
+
     @GetMapping(path = "/image/profile/{email}", produces = IMAGE_JPEG_VALUE)
     public byte[] getTempProfileImage(@PathVariable("email") String email) throws IOException {
         URL url = new URL(TEMP_PROFILE_IMAGE_BASE_URL + email);
@@ -100,12 +126,6 @@ public class AppUserController extends ExceptionHandling {
     public ResponseEntity<AppUserDto> getUserById(@PathVariable("id") Long id) {
         AppUserDto user = appUserService.findUserById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
-    @PutMapping("/update")
-    public ResponseEntity<AppUserDto> updateUser(@RequestBody AppUserDto appUserDto) {
-        AppUserDto updateUser = appUserService.updateUser(appUserDto);
-        return new ResponseEntity<>(updateUser, HttpStatus.OK);
     }
 
 

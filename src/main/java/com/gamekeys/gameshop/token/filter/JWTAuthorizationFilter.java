@@ -58,7 +58,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             // The check in the security context holder is not needed since we are not using session. This part can be removed in the if condition
             //if(jwtTokenProvider.isTokenValid(username,token) && SecurityContextHolder.getContext().getAuthentication() == null) {
             if(jwtTokenProvider.isTokenValid(username,token)) {
-                List<GrantedAuthority> authorities = jwtTokenProvider.getAuthorities(token);
+                List<GrantedAuthority> authorities = jwtTokenProvider.getTokenAuthorities(token);
                 // Once we have the authorities, we can get an authentication
                 Authentication authentication = jwtTokenProvider.getAuthentication(username,authorities,request);
                 // We can set the authentication in the security context holder because we have checked and we did not find any for the specific user

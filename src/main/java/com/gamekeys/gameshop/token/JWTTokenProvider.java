@@ -34,9 +34,10 @@ public class JWTTokenProvider {
     // We want to get all the claims for that user (All authorities/permissions)
     // This method can generate the web token once we give it the UserAppDetails (After the User has been authenticated)
     public String generateJwtToken(AppUserDetails appUserDetails){
-        String[] claims = getClaimsFromUser(appUserDetails);
+        String[] claims = getArrayClaimsFromUser(appUserDetails);
 
-        return JWT.create().withIssuer(GAME_KEY_INC)
+        return JWT.create()
+                .withIssuer(GAME_KEY_INC)
                 .withAudience(GAME_KEY_ADMINISTRATION)
                 .withIssuedAt(new Date())
                 .withSubject(appUserDetails.getUsername())
@@ -48,7 +49,7 @@ public class JWTTokenProvider {
     }
 
     // Once I have this list, I have to get all the authorities from the actual AppUserDetails/UserPrincipal
-    private String[] getClaimsFromUser(AppUserDetails appUserDetails) {
+    private String[] getArrayClaimsFromUser(AppUserDetails appUserDetails) {
         List<String> authorities = new ArrayList<>();
         // Cred ca aici extrag din lista de autoritati sub forma de string. Pt fiecare autoritate extrag un element de tip
         // granted authority
@@ -62,7 +63,7 @@ public class JWTTokenProvider {
 
     // From the token, we will need to get all the authorities.
     // We take the token, and we need to determine the authorities before we let them do anything
-    public List<GrantedAuthority> getAuthorities(String token){
+    public List<GrantedAuthority> getTokenAuthorities(String token){
         String[] claims = getClaimsFromToken(token);
         return stream(claims).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }

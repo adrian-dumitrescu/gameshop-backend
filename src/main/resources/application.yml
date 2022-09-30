@@ -22,7 +22,17 @@ server:
 #    whitelabel:
 #      enabled: false
 
+
 spring:
+#  mvc:
+#    format:
+#      date: dd/MM/yyyy
+#      date-time: yyyy-MM-dd HH:mm:ss
+#      time: HH:mm:ss
+  jackson:
+    date-format: dd/MM/yyyy
+    time-zone: Europe/Bucharest
+
   datasource:
     url: jdbc:mysql://localhost:3306/gamekeys?createDatabaseIfNotExist=true #database url
     password: root #database username
@@ -34,6 +44,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+
 #        spring: web-application-type=none
 #  mvc:
 #    throw-exception-if-no-handler-found: true

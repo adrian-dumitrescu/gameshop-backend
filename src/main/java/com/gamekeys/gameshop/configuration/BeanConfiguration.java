@@ -2,10 +2,8 @@ package com.gamekeys.gameshop.configuration;
 
 import com.gamekeys.gameshop.domain.enums.Role;
 import com.gamekeys.gameshop.domain.role.AppRole;
-import com.gamekeys.gameshop.domain.user.AppUserDto;
 import com.gamekeys.gameshop.repository.AppRoleRepository;
 import com.gamekeys.gameshop.service.AppUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -22,19 +20,21 @@ import java.util.List;
 
 @Configuration
 public class BeanConfiguration {
-    @Autowired
-    private AppRoleRepository appRoleRepository;
 
     @Bean
-    CommandLineRunner run(AppUserService appUserService) {
+    CommandLineRunner run(AppUserService appUserService,AppRoleRepository appRoleRepository) {
 
         return args -> {
 
             AppRole USER = new AppRole(null, Role.ROLE_USER);
             AppRole ADMIN = new AppRole(null, Role.ROLE_ADMIN);
-            appRoleRepository.saveAll(List.of(ADMIN, USER));
+            AppRole SUPER_ADMIN = new AppRole(null, Role.ROLE_SUPER_ADMIN);
+            appRoleRepository.saveAll(List.of(SUPER_ADMIN, ADMIN, USER));
 
-            appUserService.registerUser(new AppUserDto("Ioana", "Marin", "ioana.marin@gmail.com", "ioanaA94!"));
+            //appUserService.createNewUser("Adrian", "Dumitrescu", "dumitrescu.adrian121@gmail.com", "adrianN94!", Role.ROLE_SUPER_ADMIN,true,true);
+            appUserService.createNewUser("Ioana", "Marin", "ioana.marin@gmail.com", "ioanaA94!", Role.ROLE_SUPER_ADMIN,true,true);
+            //appUserService.registerUser(new AppUserDto("Adrian", "Dumitrescu", "dumitrescu.adrian121@gmail.com", "adrianN94!"));
+            //appUserService.registerUser(new AppUserDto("Ioana", "Marin", "ioana.marin@gmail.com", "ioanaA94!"));
 
         };
     }

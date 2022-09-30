@@ -2,11 +2,13 @@ package com.gamekeys.gameshop.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gamekeys.gameshop.domain.role.AppRole;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +22,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @Table(name = "users")
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class AppUser implements Serializable {
     //    @SequenceGenerator(
 //            name = "user_sequence",
@@ -54,7 +56,12 @@ public class AppUser implements Serializable {
 
     private String profileImageUrl;
 
-    private Date joinDate;
+//    @Temporal(TemporalType.DATE)
+//    @JsonFormat(pattern = "dd-MM-yyyy")
+//    @JsonDeserialize(using = LocalDateDeserializer.class)
+//    @JsonSerialize(using = LocalDateSerializer.class)
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate joinDate;
 
     private Boolean isNotLocked;
 
@@ -97,12 +104,12 @@ public class AppUser implements Serializable {
 //            authorities.add(new SimpleGrantedAuthority(role.getRole().toString()));
 //        });
 //        return authorities;
-        //return roles.stream().map(roles -> new SimpleGrantedAuthority(roles.getRole().toString())).collect(Collectors.toList());
+    //return roles.stream().map(roles -> new SimpleGrantedAuthority(roles.getRole().toString())).collect(Collectors.toList());
 
 //        return authorities;
-        //SimpleGrantedAuthority authority = new SimpleGrantedAuthority(this.appUserRole.toString());
-        //return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-        //return Collections.singleton(new SimpleGrantedAuthority(this.appUserRole.toString()));
+    //SimpleGrantedAuthority authority = new SimpleGrantedAuthority(this.appUserRole.toString());
+    //return this.roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    //return Collections.singleton(new SimpleGrantedAuthority(this.appUserRole.toString()));
 //    }
 
 

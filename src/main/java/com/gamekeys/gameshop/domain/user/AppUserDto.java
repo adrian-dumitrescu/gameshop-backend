@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Email;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data // This replaces the @Getter @Setter @NoArgsConstructor
@@ -32,8 +32,8 @@ public class AppUserDto {
     private Set<AppRole> roles;
 
     private String profileImageUrl;
-
-    private Date joinDate;
+    //@JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate joinDate;
 
     private Boolean isNotLocked;
 
