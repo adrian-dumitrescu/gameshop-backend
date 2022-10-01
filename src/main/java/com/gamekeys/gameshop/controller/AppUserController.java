@@ -7,6 +7,7 @@ import com.gamekeys.gameshop.exception.ExceptionHandling;
 import com.gamekeys.gameshop.exception.domain.EmailExistException;
 import com.gamekeys.gameshop.exception.domain.NotAnImageFileException;
 import com.gamekeys.gameshop.exception.domain.UserNotFoundException;
+import com.gamekeys.gameshop.misc.HttpResponse;
 import com.gamekeys.gameshop.service.AppUserService;
 import com.gamekeys.gameshop.token.JWTTokenProvider;
 import lombok.AllArgsConstructor;
@@ -25,9 +26,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
-import static com.gamekeys.gameshop.constant.FileConstant.TEMP_PROFILE_IMAGE_BASE_URL;
+import static com.gamekeys.gameshop.constant.FileConstant.*;
 import static com.gamekeys.gameshop.constant.SecurityConstant.JWT_TOKEN_HEADER;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
@@ -78,7 +81,7 @@ public class AppUserController extends ExceptionHandling {
 //    }
 
     @PostMapping("/create")
-    public ResponseEntity<AppUserDto> addNewUser(@RequestParam("firstName") String firstName,
+    public ResponseEntity<AppUserDto> createNewUser(@RequestParam("firstName") String firstName,
                                                  @RequestParam("lastName") String lastName,
                                                  @RequestParam("username") String username,
                                                  @RequestParam("email") String email,
@@ -100,14 +103,32 @@ public class AppUserController extends ExceptionHandling {
         return new ResponseEntity<>(updateUser, HttpStatus.OK);
     }
 
+    @PostMapping("/updateProfileImage")
+    public ResponseEntity<AppUserDto> updateProfileImage(@RequestParam("email") String email, @RequestParam(value = "profileImage") MultipartFile profileImage) throws UserNotFoundException, EmailExistException, IOException, NotAnImageFileException {
+        AppUserDto appUserDto = appUserService.updateProfileImage(email, profileImage);
+        return new ResponseEntity<>(appUserDto, OK);
+    }
 
+    // This is when there gas been a selected profile picture added to the user
+    // It's gonna go into the path and get the image
+    @GetMapping(path = "/image/{email}/{fileName}", produces = IMAGE_JPEG_VALUE)
+    public byte[] getProfileImage(@PathVariable("email") String username, @PathVariable("fileName") String fileName) throws IOException {
+        //"user.home" + "/gameshop/user/{email}/{email.jpg}
+        return Files.readAllBytes(Paths.get(USER_FOLDER + username + FORWARD_SLASH + fileName));
+    }
+
+    // When called, this method goes to https://robohash.org/{email} and takes the input steam
+    // (jpg image) and then returns it as a response to us
     @GetMapping(path = "/image/profile/{email}", produces = IMAGE_JPEG_VALUE)
     public byte[] getTempProfileImage(@PathVariable("email") String email) throws IOException {
+        // https://robohash.org/{email}
         URL url = new URL(TEMP_PROFILE_IMAGE_BASE_URL + email);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        // From this stream that I opened, read that many bytes at a time
         try (InputStream inputStream = url.openStream()) {
             int bytesRead;
             byte[] chunk = new byte[1024];
+            // While there are bytes to read
             while ((bytesRead = inputStream.read(chunk)) > 0) {
                 byteArrayOutputStream.write(chunk, 0, bytesRead);
             }
@@ -146,6 +167,11 @@ public class AppUserController extends ExceptionHandling {
         HttpHeaders headers = new HttpHeaders();
         headers.add(JWT_TOKEN_HEADER, jwtTokenProvider.generateJwtToken(userDetails));
         return headers;
+    }
+
+    private ResponseEntity<HttpResponse> response(String message, HttpStatus httpStatus) {
+        HttpResponse body = new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(), message);
+        return new ResponseEntity<>(body, httpStatus);
     }
 
 

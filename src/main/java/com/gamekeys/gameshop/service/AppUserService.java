@@ -76,24 +76,27 @@ public class AppUserService implements UserDetailsService {
     }
 
     private void bruteForceAttackCheck(AppUser appUser) {
-        if(appUser.getIsNotLocked()){ // If the account is not locked (false)
-            if(loginAttemptService.hasExceededMaxAttempts(appUser.getEmail())){ // If the user attempted login more than 5 times
+        if (appUser.getIsNotLocked()) { // If the account is not locked (false)
+            if (loginAttemptService.hasExceededMaxAttempts(appUser.getEmail())) { // If the user attempted login more than 5 times
                 appUser.setIsNotLocked(false); // we lock the account
-            }else {
+            } else {
                 appUser.setIsNotLocked(true); // keep it unlocked. Redundant?
             }
-        }else { // if the account is locked
+        } else { // if the account is locked
             // If the user was ever in the cache, we remove it
             loginAttemptService.evictUserFromLoginAttemptCache(appUser.getEmail());
         }
     }
 
     /**
+     * Registers a new user and sets the role to USER role
+     * Validates that there is no other user with that email. See {@link #validateNewUserEmail}
+     *
      * @param appUserDto to extract the form details
      * @return the saved appUserDto coming from the database (only when no exceptions occur)
      * @throws UserNotFoundException if no user with this email exists
      * @throws EmailExistException   if the email already exists in the database
-     * @info registers a new user and sets the role to USER role
+     * @info
      */
     @Transactional
     public AppUserDto registerUser(AppUserDto appUserDto) throws UserNotFoundException, EmailExistException, MessagingException {
@@ -124,6 +127,7 @@ public class AppUserService implements UserDetailsService {
         //AppRole userRole = new AppRole(Role.ROLE_USER);
     }
 
+    // This method is for creating new users (mostly with CommandLineRunner
     public AppUserDto createNewUser(String firstName, String lastName, String email, String password, Role role, boolean isNotLocked, boolean isEnabled) throws UserNotFoundException, EmailExistException, IOException {
         validateNewUserEmail(EMPTY, email);
         AppUser appUser = new AppUser();
@@ -179,6 +183,17 @@ public class AppUserService implements UserDetailsService {
                 + email + DOT + JPG_EXTENSION).toUriString();
     }
 
+    public AppUserDto updateProfileImage(String email, MultipartFile profileImage) throws UserNotFoundException, EmailExistException, IOException, NotAnImageFileException {
+        AppUser appUser = validateNewUserEmail(email, EMPTY);
+        saveProfileImage(appUser, profileImage);
+        return appUserMapper.convertToDto(appUser);
+    }
+
+    private String getTemporaryProfileImageUrl(String email) {
+        return DEFAULT_USER_IMAGE_PATH + email;
+        //return ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH + email).toUriString(); // does not work when using CommandLineRunner as we don't have a context path
+    }
+
     public AppUserDto findAppUserByEmail(String email) {
         //AppUser appUser = appUserRepository.findAppUserByEmailAndPassword(email, password).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + email + " and " + password + " was found")));
         AppUser appUser = appUserRepository.findAppUserByEmail(email).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + email + " was found")));
@@ -202,7 +217,7 @@ public class AppUserService implements UserDetailsService {
         return appUserMapper.convertToDto(appUser);
     }
 
-    @Transactional
+
     public void deleteAppUserById(Long id) {
         //AppUser appUser = appUserRepository.findAppUserById(id).orElseThrow(() -> new EntityNotFoundException(String.format("Specified user does not exist", id)));
         //Set<AppRole> appRoles = appUser.getRoles();
@@ -212,7 +227,6 @@ public class AppUserService implements UserDetailsService {
         appUserRepository.deleteAppUserById(id);
 
     }
-
 
 
 //    public AppUserDto getUserByEmail(String email) {
@@ -225,10 +239,7 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.existsAppUserByEmail(email);
     }
 
-    private String getTemporaryProfileImageUrl(String email) {
-        return DEFAULT_USER_IMAGE_PATH + email;
-        //return ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH + email).toUriString(); // does not work when using CommandLineRunner
-    }
+
 
 
     private AppUser validateNewUserEmail(String currentEmail, String newEmail) throws UserNotFoundException, EmailExistException {
@@ -258,7 +269,6 @@ public class AppUserService implements UserDetailsService {
         AppUser loginUser = appUserRepository.findAppUserByEmail(email).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + email + " was found")));
         return new AppUserDetails(loginUser);
     }
-
 
 
 }

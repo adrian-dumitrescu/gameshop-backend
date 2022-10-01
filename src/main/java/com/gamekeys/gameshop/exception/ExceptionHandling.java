@@ -25,7 +25,7 @@ import static org.springframework.http.HttpStatus.*;
 // This will allow to behave somewhat like a controller, but for exceptions
 @Slf4j
 @RestControllerAdvice
-public class ExceptionHandling{
+public class ExceptionHandling {
     private static final String ACCOUNT_LOCKED = "Your account has been locked. Please contact administration";
     private static final String METHOD_IS_NOT_ALLOWED = "This request method is not allowed on this endpoint. Please send a '%s' request";
     private static final String INTERNAL_SERVER_ERROR_MSG = "An error occurred while processing the request";
@@ -36,16 +36,16 @@ public class ExceptionHandling{
     public static final String ERROR_PATH = "/page-not-found"; //http://localhost:8080/page-not-found
 
     // Creating a private function that is building a httpResponse everytime we are getting an exception
+    // Same as the response method from the user controller
     private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String message) {
-        return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus,
-                httpStatus.getReasonPhrase().toUpperCase(), message), httpStatus);
+        return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(), message.toUpperCase()), httpStatus);
     }
 
     // If the exception does is not found in any of the other handlers,
     // then it's going to pass through this one
     @ExceptionHandler(Exception.class)
     public ResponseEntity<HttpResponse> internalServerErrorException(Exception exception) {
-      log.error(exception.getMessage());
+        log.error(exception.getMessage());
         return createHttpResponse(INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR_MSG);
     }
 
