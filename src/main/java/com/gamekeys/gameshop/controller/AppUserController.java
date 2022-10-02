@@ -122,7 +122,7 @@ public class AppUserController extends ExceptionHandling {
     @GetMapping(path = "/image/profile/{email}", produces = IMAGE_JPEG_VALUE)
     public byte[] getTempProfileImage(@PathVariable("email") String email) throws IOException {
         // https://robohash.org/{email}
-        URL url = new URL(TEMP_PROFILE_IMAGE_BASE_URL + email);
+        URL url = new URL(ROBOHASH_IMAGE_BASE_URL + email + SET_3_URL);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         // From this stream that I opened, read that many bytes at a time
         try (InputStream inputStream = url.openStream()) {
