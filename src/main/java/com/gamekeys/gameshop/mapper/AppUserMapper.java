@@ -1,7 +1,7 @@
 package com.gamekeys.gameshop.mapper;
 
-import com.gamekeys.gameshop.domain.user.AppUser;
-import com.gamekeys.gameshop.domain.user.AppUserDto;
+import com.gamekeys.gameshop.entity.AppUser;
+import com.gamekeys.gameshop.dto.AppUserDto;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,7 +20,6 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
         result.setJoinDate(entity.getJoinDate());
         result.setIsNotLocked(entity.getIsNotLocked());
         result.setIsEnabled(entity.getIsEnabled());
-        result.setRoles(entity.getRoles());
         return result;
     }
 

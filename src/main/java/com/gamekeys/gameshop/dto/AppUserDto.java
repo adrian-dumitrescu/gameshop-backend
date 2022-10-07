@@ -1,6 +1,7 @@
-package com.gamekeys.gameshop.domain.user;
+package com.gamekeys.gameshop.dto;
 
-import com.gamekeys.gameshop.domain.role.AppRole;
+import com.gamekeys.gameshop.entity.ActivationKey;
+import com.gamekeys.gameshop.entity.AppRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,6 @@ import java.util.Set;
 @Data // This replaces the @Getter @Setter @NoArgsConstructor
 @Validated
 @NoArgsConstructor
-//@RequiredArgsConstructor
 @AllArgsConstructor
 public class AppUserDto {
 
@@ -38,6 +38,8 @@ public class AppUserDto {
     private Boolean isNotLocked;
 
     private Boolean isEnabled;
+
+    private Set<ActivationKey> activationKeys;
 
     public AppUserDto(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;

@@ -1,4 +1,4 @@
-package com.gamekeys.gameshop.domain.enums;
+package com.gamekeys.gameshop.entity.enums;
 
 public enum Authority {
     USER_AUTHORITIES,

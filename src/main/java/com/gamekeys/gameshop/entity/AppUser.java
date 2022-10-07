@@ -1,7 +1,6 @@
-package com.gamekeys.gameshop.domain.user;
+package com.gamekeys.gameshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gamekeys.gameshop.domain.role.AppRole;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,19 +19,10 @@ import java.util.Set;
 @Entity
 //@Table(name="users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 @EqualsAndHashCode
-@Table(name = "users")
+@Table(name = "user")
 @NoArgsConstructor
 //@AllArgsConstructor
 public class AppUser implements Serializable {
-    //    @SequenceGenerator(
-//            name = "user_sequence",
-//            sequenceName = "user_sequence",
-//            allocationSize = 1
-//    )
-//    @GeneratedValue(
-//            strategy = GenerationType.SEQUENCE,
-//            generator = "user_sequence"
-//    )
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false, updatable = false)
@@ -44,7 +34,7 @@ public class AppUser implements Serializable {
     @Column(nullable = false, length = 20)
     private String lastName;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -56,7 +46,7 @@ public class AppUser implements Serializable {
 
     private String profileImageUrl;
 
-//    @Temporal(TemporalType.DATE)
+    //    @Temporal(TemporalType.DATE)
 //    @JsonFormat(pattern = "dd-MM-yyyy")
 //    @JsonDeserialize(using = LocalDateDeserializer.class)
 //    @JsonSerialize(using = LocalDateSerializer.class)
@@ -71,15 +61,18 @@ public class AppUser implements Serializable {
 //        return isLocked;
 //    }
 
-//    public boolean isEnabled() {
+    //    public boolean isEnabled() {
 //        return isEnabled;
 //    }
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<ActivationKey> activationKeys = new HashSet<>();
+
 
     // ONE USER CAN HAVE MULTIPLE ROLES -> ONE TO MANY
     @Column(nullable = false)
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "users_roles",
+            name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )

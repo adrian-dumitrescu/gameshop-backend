@@ -1,7 +1,7 @@
 package com.gamekeys.gameshop.mapper;
 
-import com.gamekeys.gameshop.domain.role.AppRole;
-import com.gamekeys.gameshop.domain.role.AppRoleDto;
+import com.gamekeys.gameshop.entity.AppRole;
+import com.gamekeys.gameshop.dto.AppRoleDto;
 
 import org.springframework.stereotype.Service;
 

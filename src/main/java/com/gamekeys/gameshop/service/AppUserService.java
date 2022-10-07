@@ -1,10 +1,10 @@
 package com.gamekeys.gameshop.service;
 
-import com.gamekeys.gameshop.domain.enums.Role;
-import com.gamekeys.gameshop.domain.role.AppRole;
-import com.gamekeys.gameshop.domain.user.AppUser;
-import com.gamekeys.gameshop.domain.user.AppUserDetails;
-import com.gamekeys.gameshop.domain.user.AppUserDto;
+import com.gamekeys.gameshop.entity.enums.Role;
+import com.gamekeys.gameshop.entity.AppRole;
+import com.gamekeys.gameshop.entity.AppUser;
+import com.gamekeys.gameshop.entity.AppUserDetails;
+import com.gamekeys.gameshop.dto.AppUserDto;
 import com.gamekeys.gameshop.exception.domain.EmailExistException;
 import com.gamekeys.gameshop.exception.domain.EntityNotFoundException;
 import com.gamekeys.gameshop.exception.domain.NotAnImageFileException;
@@ -45,12 +45,10 @@ import static org.springframework.http.MediaType.*;
 
 @Slf4j
 @Service
-//@Transactional // Manage propagation
 @AllArgsConstructor
 @Qualifier("appUserDetailsService")
+//@Transactional // Manage propagation
 public class AppUserService implements UserDetailsService {
-
-    private static final String USER_NOT_FOUND_MSG = "User with email %s not found.";
     private final AppUserRepository appUserRepository;
     private final AppUserMapper appUserMapper;
     private final AppRoleRepository appRoleRepository;

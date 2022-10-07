@@ -24,11 +24,11 @@ server:
 
 
 spring:
-#  mvc:
-#    format:
-#      date: dd/MM/yyyy
-#      date-time: yyyy-MM-dd HH:mm:ss
-#      time: HH:mm:ss
+  #  mvc:
+  #    format:
+  #      date: dd/MM/yyyy
+  #      date-time: yyyy-MM-dd HH:mm:ss
+  #      time: HH:mm:ss
   jackson:
     date-format: dd/MM/yyyy
     time-zone: Europe/Bucharest
@@ -44,6 +44,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+#        globally_quoted_identifiers: true
+
+
 
 #        spring: web-application-type=none
 #  mvc:

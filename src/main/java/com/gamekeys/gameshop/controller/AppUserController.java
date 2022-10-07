@@ -1,8 +1,9 @@
 package com.gamekeys.gameshop.controller;
 
-import com.gamekeys.gameshop.domain.enums.Role;
-import com.gamekeys.gameshop.domain.user.AppUserDetails;
-import com.gamekeys.gameshop.domain.user.AppUserDto;
+import com.gamekeys.gameshop.entity.enums.Role;
+import com.gamekeys.gameshop.entity.AppUserDetails;
+import com.gamekeys.gameshop.dto.AppUserDto;
+import com.gamekeys.gameshop.dto.LoginDto;
 import com.gamekeys.gameshop.exception.ExceptionHandling;
 import com.gamekeys.gameshop.exception.domain.EmailExistException;
 import com.gamekeys.gameshop.exception.domain.NotAnImageFileException;
@@ -55,30 +56,29 @@ public class AppUserController extends ExceptionHandling {
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    @GetMapping("/login/{email}/{password}")
-    public ResponseEntity<AppUserDto> loginUser(@PathVariable("email") String email, @PathVariable("password") String password) {
-        authenticate(email, password);
-        // Get the userDetails in order to generate the JWT header
-        AppUserDetails appUserDetails = appUserService.getUserDetails(email);
-        HttpHeaders jwtHeader = getJwtHeader(appUserDetails);
-//        AppUser appUser = appUserDetails.getAppUser();
-//        Set<AppRole> userRole = appUser.getRoles();
-        AppUserDto loginUser = appUserService.findAppUserByEmail(email);
-        return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
-    }
-
-//    @GetMapping("/login/")
-//    public ResponseEntity<AppUserDto> loginUser(@RequestBody AppUserDto appUserDto) {
-//        authenticate(appUserDto.getEmail(), appUserDto.getPassword());
+//    @GetMapping("/login/{email}/{password}")
+//    public ResponseEntity<AppUserDto> loginUser(@PathVariable("email") String email, @PathVariable("password") String password) {
+//        authenticate(email, password);
 //        // Get the userDetails in order to generate the JWT header
-//        AppUserDetails appUserDetails = appUserService.getUserDetails(appUserDto.getEmail());
+//        AppUserDetails appUserDetails = appUserService.getUserDetails(email);
 //        HttpHeaders jwtHeader = getJwtHeader(appUserDetails);
 ////        AppUser appUser = appUserDetails.getAppUser();
 ////        Set<AppRole> userRole = appUser.getRoles();
-//
-//        AppUserDto loginUser = appUserService.findAppUserByEmail(appUserDto.getEmail());
+//        AppUserDto loginUser = appUserService.findAppUserByEmail(email);
 //        return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
 //    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AppUserDto> loginUser(@RequestBody LoginDto loginDto) {
+        authenticate(loginDto.getEmail(), loginDto.getPassword());
+        // Get the userDetails in order to generate the JWT header
+        AppUserDetails appUserDetails = appUserService.getUserDetails(loginDto.getEmail());
+        HttpHeaders jwtHeader = getJwtHeader(appUserDetails);
+//        AppUser appUser = appUserDetails.getAppUser();
+//        Set<AppRole> userRole = appUser.getRoles();
+        AppUserDto loginUser = appUserService.findAppUserByEmail(loginDto.getEmail());
+        return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
+    }
 
     @PostMapping("/create")
     public ResponseEntity<AppUserDto> createNewUser(@RequestParam("firstName") String firstName,
@@ -160,7 +160,8 @@ public class AppUserController extends ExceptionHandling {
         // We told the authentication manager how to fetch the user (by implementing the UserDetails interface
         // and told it to look in the database by the username)
         // This will trigger the loadUserByUsername method in userService
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
+        authenticationManager.authenticate(authToken);
     }
 
     private HttpHeaders getJwtHeader(AppUserDetails userDetails) {

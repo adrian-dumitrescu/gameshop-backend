@@ -1,7 +1,7 @@
 package com.gamekeys.gameshop.repository;
 
-import com.gamekeys.gameshop.domain.enums.Role;
-import com.gamekeys.gameshop.domain.role.AppRole;
+import com.gamekeys.gameshop.entity.enums.Role;
+import com.gamekeys.gameshop.entity.AppRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

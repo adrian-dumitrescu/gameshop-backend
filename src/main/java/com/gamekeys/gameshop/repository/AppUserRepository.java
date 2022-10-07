@@ -1,6 +1,6 @@
 package com.gamekeys.gameshop.repository;
 
-import com.gamekeys.gameshop.domain.user.AppUser;
+import com.gamekeys.gameshop.entity.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

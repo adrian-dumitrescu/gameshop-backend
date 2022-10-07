@@ -1,6 +1,5 @@
-package com.gamekeys.gameshop.domain.role;
+package com.gamekeys.gameshop.dto;
 
-import com.gamekeys.gameshop.domain.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +9,10 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppRoleDto {
+public class RegisterDto {
 
-    private Long id;
+    private String firstName;
 
-    private Role role;
+    private String lastName;
 
 }

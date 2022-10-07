@@ -1,6 +1,6 @@
-package com.gamekeys.gameshop.domain.role;
+package com.gamekeys.gameshop.entity;
 
-import com.gamekeys.gameshop.domain.enums.Role;
+import com.gamekeys.gameshop.entity.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Data
-@Table(name = "roles")
+@Table(name = "role")
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppRole {

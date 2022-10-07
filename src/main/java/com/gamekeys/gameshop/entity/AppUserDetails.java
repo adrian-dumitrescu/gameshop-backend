@@ -1,6 +1,5 @@
-package com.gamekeys.gameshop.domain.user;
+package com.gamekeys.gameshop.entity;
 
-import com.gamekeys.gameshop.domain.role.AppRole;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
