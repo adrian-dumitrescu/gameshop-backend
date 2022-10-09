@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.UUID;
-
 @Data // This replaces the @Getter @Setter @NoArgsConstructor
 @Validated
 @NoArgsConstructor
@@ -17,7 +15,7 @@ public class ActivationKeyDto {
 
     private Long id;
 
-    private UUID productKey;
+    private String productKey;
 
     private AppUser user;
 

@@ -1,30 +1,39 @@
 package com.gamekeys.gameshop.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.UUID;
+import java.io.Serializable;
 
-@Data
+//@Data
+//@EqualsAndHashCode
 @Entity
-@EqualsAndHashCode
-//@Table(name = "product_keys")
+@Table(name = "ACTIVATION_KEY")
+@Getter
+@Setter
 @NoArgsConstructor
-public class ActivationKey {
+@AllArgsConstructor
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class ActivationKey implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "key_id", nullable = false, updatable = false)
     private Long id;
 
-    private UUID productKey;
+    @Column(nullable = false, unique = true)
+    private String productKey;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "user_fk", nullable = false)
+    @JsonBackReference
     private AppUser user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "product_fk", nullable = false)
+    @JsonBackReference
     private Product product;
 }

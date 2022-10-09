@@ -1,9 +1,9 @@
 package com.gamekeys.gameshop.controller;
 
-import com.gamekeys.gameshop.entity.enums.Role;
-import com.gamekeys.gameshop.entity.AppUserDetails;
 import com.gamekeys.gameshop.dto.AppUserDto;
 import com.gamekeys.gameshop.dto.LoginDto;
+import com.gamekeys.gameshop.entity.AppUserDetails;
+import com.gamekeys.gameshop.entity.enums.Role;
 import com.gamekeys.gameshop.exception.ExceptionHandling;
 import com.gamekeys.gameshop.exception.domain.EmailExistException;
 import com.gamekeys.gameshop.exception.domain.NotAnImageFileException;
@@ -155,6 +155,13 @@ public class AppUserController extends ExceptionHandling {
         appUserService.deleteAppUserById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/add/{activationKey}/{userEmail}/{productName}")
+    public ResponseEntity<AppUserDto> addKeyForUser(@PathVariable("activationKey") String activationKey, @PathVariable("userEmail") String userEmail, @PathVariable("productName") String productName) {
+        AppUserDto appUserDto = appUserService.addKeyForUser(activationKey, userEmail, productName);
+        return new ResponseEntity<>(appUserDto, OK);
+    }
+
 
     private void authenticate(String username, String password) {
         // We told the authentication manager how to fetch the user (by implementing the UserDetails interface

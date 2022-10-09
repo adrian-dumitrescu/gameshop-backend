@@ -48,6 +48,8 @@ public class AppUserDto {
         this.password = password;
     }
 
+
+
     //    public boolean isNotLocked() {
 //        return isLocked;
 //    }

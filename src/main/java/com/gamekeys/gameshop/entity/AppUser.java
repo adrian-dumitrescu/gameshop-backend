@@ -1,9 +1,11 @@
 package com.gamekeys.gameshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,15 +15,19 @@ import java.util.Set;
 
 //@Validated
 //@Data // This replaces the @Getter @Setter @NoArgsConstructor
-//@Getter
-//@Setter
-@Data
-@Entity
+
+//@Data
+
+
 //@Table(name="users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
-@EqualsAndHashCode
-@Table(name = "user")
+//@EqualsAndHashCode
+@Entity
+@Table(name = "USER")
+@Getter
+@Setter
 @NoArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class AppUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,9 +70,6 @@ public class AppUser implements Serializable {
     //    public boolean isEnabled() {
 //        return isEnabled;
 //    }
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-    private Set<ActivationKey> activationKeys = new HashSet<>();
-
 
     // ONE USER CAN HAVE MULTIPLE ROLES -> ONE TO MANY
     @Column(nullable = false)
@@ -77,6 +80,13 @@ public class AppUser implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<AppRole> roles = new HashSet<>();
+
+
+
+    //@JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    @JsonManagedReference
+    private Set<ActivationKey> activationKeys = new HashSet<>();
 
 
 //  @Enumerated(EnumType.STRING)

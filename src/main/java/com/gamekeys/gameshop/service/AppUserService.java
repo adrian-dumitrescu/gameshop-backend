@@ -1,17 +1,18 @@
 package com.gamekeys.gameshop.service;
 
-import com.gamekeys.gameshop.entity.enums.Role;
-import com.gamekeys.gameshop.entity.AppRole;
-import com.gamekeys.gameshop.entity.AppUser;
-import com.gamekeys.gameshop.entity.AppUserDetails;
 import com.gamekeys.gameshop.dto.AppUserDto;
+import com.gamekeys.gameshop.entity.*;
+import com.gamekeys.gameshop.entity.enums.Role;
 import com.gamekeys.gameshop.exception.domain.EmailExistException;
 import com.gamekeys.gameshop.exception.domain.EntityNotFoundException;
 import com.gamekeys.gameshop.exception.domain.NotAnImageFileException;
 import com.gamekeys.gameshop.exception.domain.UserNotFoundException;
+import com.gamekeys.gameshop.mapper.ActivationKeyMapper;
 import com.gamekeys.gameshop.mapper.AppUserMapper;
+import com.gamekeys.gameshop.repository.ActivationKeyRepository;
 import com.gamekeys.gameshop.repository.AppRoleRepository;
 import com.gamekeys.gameshop.repository.AppUserRepository;
+import com.gamekeys.gameshop.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -50,10 +51,14 @@ import static org.springframework.http.MediaType.*;
 //@Transactional // Manage propagation
 public class AppUserService implements UserDetailsService {
     private final AppUserRepository appUserRepository;
-    private final AppUserMapper appUserMapper;
     private final AppRoleRepository appRoleRepository;
+    private final ProductRepository productRepository;
+    private final ActivationKeyRepository activationKeyRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final LoginAttemptService loginAttemptService;
+    private final AppUserMapper appUserMapper;
+
+    private final ActivationKeyMapper activationKeyMapper;
 
 
     @Override
@@ -203,12 +208,35 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.findAll().stream().map(c -> appUserMapper.convertToDto(c)).collect(Collectors.toList());
     }
 
-//    public AppUserDto updateUser(AppUserDto appUserDto) {
-//        // Update user by id:
-//        AppUser appUserEntity = appUserRepository.findAppUserByEmail(appUserDto.getEmail()).orElseThrow(() -> new EntityNotFoundException(String.format("User with email {} does not exist.", appUserDto.getEmail())));
-//        appUserRepository.save(appUserEntity);
-//        return appUserMapper.convertToDto(appUserEntity);
-//    }
+    @Transactional
+    public AppUserDto addKeyForUser(String activationKey, String userEmail, String productName){
+        ActivationKey newKey = new ActivationKey();
+        Product product = productRepository.findProductByProductName(productName).orElseThrow(() -> new EntityNotFoundException(String.format("No product with name " + productName + " was found")));
+        AppUser appUser = appUserRepository.findAppUserByEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + userEmail + " was found")));
+
+        newKey.setProductKey(activationKey);
+        newKey.setUser(appUser);
+        newKey.setProduct(product);
+        activationKeyRepository.save(newKey);
+
+        appUser.setActivationKeys(appUser.getActivationKeys());
+
+        System.out.println(appUser.getActivationKeys().toString());
+
+//        newKey.setProductKey(activationKey);
+//        newKey.setProduct(product);
+//        newKey.setUser(appUser);
+//        appUser.getActivationKeys().add(newKey);
+
+
+//        newKey.setProductKey(activationKey);
+//        newKey.setUser(appUser);
+//        newKey.setProduct(product);
+//        activationKeyRepository.save(newKey);
+
+
+        return appUserMapper.convertToDto(appUser);
+    }
 
     public AppUserDto findUserById(Long id) {
         AppUser appUser = appUserRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("No user with id " + id + " was found")));
