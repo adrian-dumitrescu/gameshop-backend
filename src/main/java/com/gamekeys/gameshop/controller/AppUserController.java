@@ -93,7 +93,7 @@ public class AppUserController extends ExceptionHandling {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<AppUserDto> updateUser(@RequestParam("firstName") String currentEmail,
+    public ResponseEntity<AppUserDto> updateUser(@RequestParam("currentEmail") String currentEmail,
                                                  @RequestParam("firstName") String firstName,
                                                  @RequestParam("lastName") String lastName,
                                                  @RequestParam("email") String newEmail,
@@ -101,6 +101,18 @@ public class AppUserController extends ExceptionHandling {
                                                  MultipartFile profileImage) throws UserNotFoundException, EmailExistException, IOException, NotAnImageFileException {
         AppUserDto updateUser = appUserService.updateUser(currentEmail, firstName, lastName, newEmail, profileImage);
         return new ResponseEntity<>(updateUser, HttpStatus.OK);
+    }
+
+    @PostMapping("/update/card")
+    public ResponseEntity<AppUserDto> updateUserCard(@RequestParam("email") String email,
+                                                     @RequestParam("firstName") String firstName,
+                                                     @RequestParam("lastName") String lastName,
+                                                     @RequestParam("nickname") String nickname,
+                                                     @RequestParam("gender") String gender,
+                                                     @RequestParam("country") String country,
+                                                     @RequestParam("age") Integer age) throws UserNotFoundException, EmailExistException, IOException {
+        AppUserDto updatedUser = appUserService.updateUserCard(email, firstName, lastName, nickname, gender, country, age);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @PostMapping("/updateProfileImage")

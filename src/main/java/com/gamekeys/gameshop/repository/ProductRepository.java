@@ -11,5 +11,5 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    Optional<Product> findProductByProductName(String productName);
+    Optional<Product> findProductByName(String productName);
 }

@@ -1,6 +1,5 @@
 package com.gamekeys.gameshop.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,15 +24,15 @@ public class ActivationKey implements Serializable {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String productKey;
+    private String keyValue;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "user_fk", nullable = false)
-    @JsonBackReference
+    //@JsonBackReference
     private AppUser user;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "product_fk", nullable = false)
-    @JsonBackReference
+    //@JsonBackReference
     private Product product;
 }

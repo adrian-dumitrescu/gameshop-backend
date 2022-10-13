@@ -1,12 +1,12 @@
 package com.gamekeys.gameshop.mapper;
 
-import com.gamekeys.gameshop.entity.AppRole;
 import com.gamekeys.gameshop.dto.AppRoleDto;
-
+import com.gamekeys.gameshop.entity.AppRole;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AppRoleMapper implements Mapper<AppRole, AppRoleDto>{
+
     @Override
     public AppRoleDto convertToDto(AppRole entity) {
         AppRoleDto result = new AppRoleDto();
@@ -22,4 +22,5 @@ public class AppRoleMapper implements Mapper<AppRole, AppRoleDto>{
         result.setRole(dto.getRole());
         return result;
     }
+
 }

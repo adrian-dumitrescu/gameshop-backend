@@ -1,9 +1,16 @@
 package com.gamekeys.gameshop.configuration;
 
-import com.gamekeys.gameshop.entity.enums.Role;
+import com.gamekeys.gameshop.entity.ActivationKey;
 import com.gamekeys.gameshop.entity.AppRole;
+import com.gamekeys.gameshop.entity.Product;
+import com.gamekeys.gameshop.entity.enums.Role;
+import com.gamekeys.gameshop.repository.ActivationKeyRepository;
 import com.gamekeys.gameshop.repository.AppRoleRepository;
+import com.gamekeys.gameshop.repository.AppUserRepository;
+import com.gamekeys.gameshop.repository.ProductRepository;
+import com.gamekeys.gameshop.service.ActivationKeyService;
 import com.gamekeys.gameshop.service.AppUserService;
+import com.gamekeys.gameshop.service.ProductService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +29,13 @@ import java.util.List;
 public class BeanConfiguration {
 
     @Bean
-    CommandLineRunner run(AppUserService appUserService,AppRoleRepository appRoleRepository) {
+    CommandLineRunner run(AppUserService appUserService,
+                          AppUserRepository appUserRepository,
+                          AppRoleRepository appRoleRepository,
+                          ActivationKeyService activationKeyService,
+                          ActivationKeyRepository activationKeyRepository,
+                          ProductRepository productRepository,
+                          ProductService productService) {
 
         return args -> {
 
@@ -32,10 +45,17 @@ public class BeanConfiguration {
             appRoleRepository.saveAll(List.of(SUPER_ADMIN, ADMIN, USER));
 
             //appUserService.createNewUser("Adrian", "Dumitrescu", "dumitrescu.adrian121@gmail.com", "adrianN94!", Role.ROLE_SUPER_ADMIN,true,true);
-            appUserService.createNewUser("Ioana", "Marin", "ioana.marin@gmail.com", "ioanaA94!", Role.ROLE_SUPER_ADMIN,true,true);
+            appUserService.createNewUser("Ioana", "Marin", "ioana.marin@gmail.com", "ioanaA94!", Role.ROLE_SUPER_ADMIN, true, true);
             //appUserService.registerUser(new AppUserDto("Adrian", "Dumitrescu", "dumitrescu.adrian121@gmail.com", "adrianN94!"));
             //appUserService.registerUser(new AppUserDto("Ioana", "Marin", "ioana.marin@gmail.com", "ioanaA94!"));
+            Product overwatch = new Product(null, "Overwatch", "Blizzard Entertainment");
+            productRepository.save(overwatch);
 
+            ActivationKey activationKey = new ActivationKey();
+            activationKey.setKeyValue("231412412");
+            activationKey.setUser(appUserRepository.getReferenceById(1L));
+            activationKey.setProduct(productRepository.getReferenceById(1L));
+            activationKeyRepository.save(activationKey);
         };
     }
 
@@ -70,7 +90,6 @@ public class BeanConfiguration {
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }
-
 
 
     @Bean

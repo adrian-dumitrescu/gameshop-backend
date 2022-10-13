@@ -1,6 +1,5 @@
 package com.gamekeys.gameshop.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,15 +26,19 @@ public class Product implements Serializable {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String productName;
+    private String name;
 
     @Column(nullable = false)
     private String publisher;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
-    @JsonManagedReference
+    //@JsonManagedReference
     //@JsonIgnore
     private Set<ActivationKey> activationKeys = new HashSet<>();
 
-
+    public Product(Long id, String name, String publisher) {
+        this.id = id;
+        this.name = name;
+        this.publisher = publisher;
+    }
 }

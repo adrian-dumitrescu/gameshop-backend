@@ -1,6 +1,5 @@
 package com.gamekeys.gameshop.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -50,7 +49,6 @@ public class AppUser implements Serializable {
 //    @Enumerated(EnumType.STRING)
 //    private Role appUserRole = ROLE_USER;
 
-    private String profileImageUrl;
 
     //    @Temporal(TemporalType.DATE)
 //    @JsonFormat(pattern = "dd-MM-yyyy")
@@ -76,17 +74,27 @@ public class AppUser implements Serializable {
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
+            joinColumns = @JoinColumn(name = "user_fk"),
+            inverseJoinColumns = @JoinColumn(name = "role_fk")
     )
     private Set<AppRole> roles = new HashSet<>();
 
-
-
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     //@JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-    @JsonManagedReference
+    //@JsonManagedReference
     private Set<ActivationKey> activationKeys = new HashSet<>();
+
+    // USER CARD:
+
+    private String profileImageUrl;
+
+    private String nickname;
+
+    private String country;
+
+    private String gender;
+
+    private Integer age;
 
 
 //  @Enumerated(EnumType.STRING)

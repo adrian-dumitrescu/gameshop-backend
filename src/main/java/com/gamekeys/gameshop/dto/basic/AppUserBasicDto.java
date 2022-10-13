@@ -1,6 +1,5 @@
-package com.gamekeys.gameshop.dto;
+package com.gamekeys.gameshop.dto.basic;
 
-import com.gamekeys.gameshop.dto.basic.ActivationKeyBasicDto;
 import com.gamekeys.gameshop.entity.AppRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +14,7 @@ import java.util.Set;
 @Validated
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppUserDto {
+public class AppUserBasicDto {
 
     private Long id;
     //@NotEmpty
@@ -38,8 +37,6 @@ public class AppUserDto {
 
     private Boolean isEnabled;
 
-    private Set<ActivationKeyBasicDto> activationKey;
-
     // USER CARD:
     private String profileImageUrl;
 
@@ -51,22 +48,6 @@ public class AppUserDto {
 
     private Integer age;
 
+    // No reference to Set<ActivationKey> activationKeys;
 
-//    public AppUserDto(String firstName, String lastName, String email, String password) {
-//        this.firstName = firstName;
-//        this.lastName = lastName;
-//        this.email = email;
-//        this.password = password;
-//    }
-
-    //    public boolean isNotLocked() {
-//        return isLocked;
-//    }
-//
-//    public boolean isEnabled() {
-//        return isEnabled;
-//    }
 }
-
-// NotNull does not work on DTO's
-// Use NotEmpty

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import java.io.Serializable;
+
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -14,7 +16,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "role")
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppRole {
+public class AppRole implements Serializable {
     @Id
     @Column(name = "role_id", nullable = false, updatable = false)
     @GeneratedValue(strategy = IDENTITY)

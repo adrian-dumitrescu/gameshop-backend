@@ -1,24 +1,22 @@
 package com.gamekeys.gameshop.dto;
 
-import com.gamekeys.gameshop.entity.AppUser;
-import com.gamekeys.gameshop.entity.Product;
+import com.gamekeys.gameshop.dto.basic.AppUserBasicDto;
+import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 
 @Data // This replaces the @Getter @Setter @NoArgsConstructor
-@Validated
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActivationKeyDto {
 
     private Long id;
 
-    private String productKey;
+    private String keyValue;
 
-    private AppUser user;
+    private AppUserBasicDto appUser;
 
-    private Product product;
+    private ProductBasicDto product;
 
 }

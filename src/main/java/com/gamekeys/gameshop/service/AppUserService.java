@@ -50,6 +50,7 @@ import static org.springframework.http.MediaType.*;
 @Qualifier("appUserDetailsService")
 //@Transactional // Manage propagation
 public class AppUserService implements UserDetailsService {
+
     private final AppUserRepository appUserRepository;
     private final AppRoleRepository appRoleRepository;
     private final ProductRepository productRepository;
@@ -163,6 +164,19 @@ public class AppUserService implements UserDetailsService {
         return appUserMapper.convertToDto(currentUser);
     }
 
+    @Transactional
+    public AppUserDto updateUserCard(String userEmail, String newFirstName, String newLastName, String newNickname, String gender, String country, Integer age) {
+        AppUser appUser = appUserRepository.findAppUserByEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + userEmail + " was found")));
+        appUser.setFirstName(newFirstName);
+        appUser.setLastName(newLastName);
+        appUser.setNickname(newNickname);
+        appUser.setGender(gender);
+        appUser.setCountry(country);
+        appUser.setAge(age);
+        appUserRepository.save(appUser);
+        return appUserMapper.convertToDto(appUser);
+    }
+
     private void saveProfileImage(AppUser user, MultipartFile profileImage) throws IOException, NotAnImageFileException {
         if (profileImage != null) {
             if (!Arrays.asList(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, IMAGE_GIF_VALUE).contains(profileImage.getContentType())) {
@@ -211,10 +225,10 @@ public class AppUserService implements UserDetailsService {
     @Transactional
     public AppUserDto addKeyForUser(String activationKey, String userEmail, String productName){
         ActivationKey newKey = new ActivationKey();
-        Product product = productRepository.findProductByProductName(productName).orElseThrow(() -> new EntityNotFoundException(String.format("No product with name " + productName + " was found")));
+        Product product = productRepository.findProductByName(productName).orElseThrow(() -> new EntityNotFoundException(String.format("No product with name " + productName + " was found")));
         AppUser appUser = appUserRepository.findAppUserByEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + userEmail + " was found")));
 
-        newKey.setProductKey(activationKey);
+        newKey.setKeyValue(activationKey);
         newKey.setUser(appUser);
         newKey.setProduct(product);
         activationKeyRepository.save(newKey);

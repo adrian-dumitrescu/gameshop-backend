@@ -47,7 +47,6 @@ spring:
 #        globally_quoted_identifiers: true
 
 
-
 #        spring: web-application-type=none
 #  mvc:
 #    throw-exception-if-no-handler-found: true

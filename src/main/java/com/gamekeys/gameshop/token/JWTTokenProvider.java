@@ -54,7 +54,6 @@ public class JWTTokenProvider {
         // Cred ca aici extrag din lista de autoritati sub forma de string. Pt fiecare autoritate extrag un element de tip
         // granted authority
         // Sau, pentru fiecare rol pe care il are, extrage autoritatile?
-
         for(GrantedAuthority grantedAuthority : appUserDetails.getAuthorities()){
             authorities.add(grantedAuthority.getAuthority());
         }
@@ -72,9 +71,7 @@ public class JWTTokenProvider {
     public Authentication getAuthentication(String username, List<GrantedAuthority> authorities, HttpServletRequest request){
         UsernamePasswordAuthenticationToken usernamePasswordAuthToken = new
                 UsernamePasswordAuthenticationToken(username,null,authorities);
-
         usernamePasswordAuthToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
         return usernamePasswordAuthToken;
     }
 
