@@ -1,6 +1,6 @@
 package com.gamekeys.gameshop.service;
 
-import com.gamekeys.gameshop.dto.ProductDto;
+import com.gamekeys.gameshop.dto.ProductDetailsDto;
 import com.gamekeys.gameshop.mapper.ProductMapper;
 import com.gamekeys.gameshop.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,7 @@ public class ProductService {
 
     private final ProductMapper productMapper;
 
-    public List<ProductDto> getAllProducts(){
+    public List<ProductDetailsDto> getAllProducts(){
         return productRepository.findAll().stream().map(c -> productMapper.convertToDto(c)).collect(Collectors.toList());
     }
 

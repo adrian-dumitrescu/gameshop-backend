@@ -1,11 +1,11 @@
 package com.gamekeys.gameshop.mapper;
 
-import com.gamekeys.gameshop.dto.ActivationKeyDto;
+import com.gamekeys.gameshop.dto.ProductKeyDto;
 import com.gamekeys.gameshop.dto.basic.AppUserBasicDto;
-import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
-import com.gamekeys.gameshop.entity.ActivationKey;
+import com.gamekeys.gameshop.dto.basic.ProductDetailsBasicDto;
+import com.gamekeys.gameshop.entity.ProductKey;
 import com.gamekeys.gameshop.entity.AppUser;
-import com.gamekeys.gameshop.entity.Product;
+import com.gamekeys.gameshop.entity.ProductDetails;
 import com.gamekeys.gameshop.repository.AppUserRepository;
 import com.gamekeys.gameshop.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -13,40 +13,40 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class ActivationKeyMapper implements Mapper<ActivationKey, ActivationKeyDto> {
+public class ActivationKeyMapper implements Mapper<ProductKey, ProductKeyDto> {
 
     private  AppUserRepository appUserRepository;
     private  ProductRepository productRepository;
 
 
     @Override
-    public ActivationKeyDto convertToDto(ActivationKey entity) {
-        ActivationKeyDto result = new ActivationKeyDto();
+    public ProductKeyDto convertToDto(ProductKey entity) {
+        ProductKeyDto result = new ProductKeyDto();
         result.setId(entity.getId());
         result.setKeyValue(entity.getKeyValue());
-        result.setAppUser(appUserToBasicDto(entity.getUser()));
-        result.setProduct(productToBasicDto(entity.getProduct()));
+        //result.setAppUser(appUserToBasicDto(entity.getUser()));
+        result.setProduct(productToBasicDto(entity.getProductDetails()));
         return result;
     }
 
     @Override
-    public ActivationKey convertToEntity(ActivationKeyDto dto) {
-        ActivationKey result = new ActivationKey();
+    public ProductKey convertToEntity(ProductKeyDto dto) {
+        ProductKey result = new ProductKey();
         result.setId(dto.getId());
         result.setKeyValue(dto.getKeyValue());
         if(dto.getAppUser() != null) {
-            result.setUser(appUserRepository.getReferenceById(dto.getAppUser().getId()));
+        //    result.setUser(appUserRepository.getReferenceById(dto.getAppUser().getId()));
         }
         if(dto.getProduct() != null) {
-            result.setProduct(productRepository.getReferenceById(dto.getAppUser().getId()));
+            result.setProductDetails(productRepository.getReferenceById(dto.getAppUser().getId()));
         }
         return result;
     }
 
-    private ProductBasicDto productToBasicDto(Product entity) {
-        ProductBasicDto result = new ProductBasicDto();
+    private ProductDetailsBasicDto productToBasicDto(ProductDetails entity) {
+        ProductDetailsBasicDto result = new ProductDetailsBasicDto();
         result.setId(entity.getId());
-        result.setProductName(entity.getName());
+        result.setProductName(entity.getProductName());
         result.setPublisher(entity.getPublisher());
         return result;
     }

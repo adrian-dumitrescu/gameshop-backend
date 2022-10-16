@@ -1,7 +1,7 @@
 package com.gamekeys.gameshop.dto;
 
 import com.gamekeys.gameshop.dto.basic.AppUserBasicDto;
-import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
+import com.gamekeys.gameshop.dto.basic.ProductDetailsBasicDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data // This replaces the @Getter @Setter @NoArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActivationKeyDto {
+public class ProductKeyDto {
 
     private Long id;
 
@@ -17,6 +17,6 @@ public class ActivationKeyDto {
 
     private AppUserBasicDto appUser;
 
-    private ProductBasicDto product;
+    private ProductDetailsBasicDto product;
 
 }

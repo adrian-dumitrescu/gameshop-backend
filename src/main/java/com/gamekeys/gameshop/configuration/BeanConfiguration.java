@@ -1,13 +1,10 @@
 package com.gamekeys.gameshop.configuration;
 
-import com.gamekeys.gameshop.entity.ActivationKey;
 import com.gamekeys.gameshop.entity.AppRole;
-import com.gamekeys.gameshop.entity.Product;
+import com.gamekeys.gameshop.entity.ProductDetails;
+import com.gamekeys.gameshop.entity.ShoppingSession;
 import com.gamekeys.gameshop.entity.enums.Role;
-import com.gamekeys.gameshop.repository.ActivationKeyRepository;
-import com.gamekeys.gameshop.repository.AppRoleRepository;
-import com.gamekeys.gameshop.repository.AppUserRepository;
-import com.gamekeys.gameshop.repository.ProductRepository;
+import com.gamekeys.gameshop.repository.*;
 import com.gamekeys.gameshop.service.ActivationKeyService;
 import com.gamekeys.gameshop.service.AppUserService;
 import com.gamekeys.gameshop.service.ProductService;
@@ -35,7 +32,8 @@ public class BeanConfiguration {
                           ActivationKeyService activationKeyService,
                           ActivationKeyRepository activationKeyRepository,
                           ProductRepository productRepository,
-                          ProductService productService) {
+                          ProductService productService,
+                          ShoppingSessionRepository shoppingSessionRepository) {
 
         return args -> {
 
@@ -44,18 +42,23 @@ public class BeanConfiguration {
             AppRole SUPER_ADMIN = new AppRole(null, Role.ROLE_SUPER_ADMIN);
             appRoleRepository.saveAll(List.of(SUPER_ADMIN, ADMIN, USER));
 
+
             //appUserService.createNewUser("Adrian", "Dumitrescu", "dumitrescu.adrian121@gmail.com", "adrianN94!", Role.ROLE_SUPER_ADMIN,true,true);
             appUserService.createNewUser("Ioana", "Marin", "ioana.marin@gmail.com", "ioanaA94!", Role.ROLE_SUPER_ADMIN, true, true);
             //appUserService.registerUser(new AppUserDto("Adrian", "Dumitrescu", "dumitrescu.adrian121@gmail.com", "adrianN94!"));
             //appUserService.registerUser(new AppUserDto("Ioana", "Marin", "ioana.marin@gmail.com", "ioanaA94!"));
-            Product overwatch = new Product(null, "Overwatch", "Blizzard Entertainment");
+            ProductDetails overwatch = new ProductDetails(null, "Overwatch", "Blizzard Entertainment");
             productRepository.save(overwatch);
 
-            ActivationKey activationKey = new ActivationKey();
-            activationKey.setKeyValue("231412412");
-            activationKey.setUser(appUserRepository.getReferenceById(1L));
-            activationKey.setProduct(productRepository.getReferenceById(1L));
-            activationKeyRepository.save(activationKey);
+            ShoppingSession ioanaShoppingSession = new ShoppingSession();
+            ioanaShoppingSession.setUser(appUserRepository.getReferenceById(1L));
+            shoppingSessionRepository.save(ioanaShoppingSession);
+
+//            ProductKey productKey = new ProductKey();
+//            productKey.setKeyValue("231412412");
+//            productKey.setUser(appUserRepository.getReferenceById(1L));
+//            productKey.setProductDetails(productRepository.getReferenceById(1L));
+//            activationKeyRepository.save(productKey);
         };
     }
 

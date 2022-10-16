@@ -3,10 +3,7 @@ package com.gamekeys.gameshop.service;
 import com.gamekeys.gameshop.dto.AppUserDto;
 import com.gamekeys.gameshop.entity.*;
 import com.gamekeys.gameshop.entity.enums.Role;
-import com.gamekeys.gameshop.exception.domain.EmailExistException;
-import com.gamekeys.gameshop.exception.domain.EntityNotFoundException;
-import com.gamekeys.gameshop.exception.domain.NotAnImageFileException;
-import com.gamekeys.gameshop.exception.domain.UserNotFoundException;
+import com.gamekeys.gameshop.exception.domain.*;
 import com.gamekeys.gameshop.mapper.ActivationKeyMapper;
 import com.gamekeys.gameshop.mapper.AppUserMapper;
 import com.gamekeys.gameshop.repository.ActivationKeyRepository;
@@ -148,6 +145,7 @@ public class AppUserService implements UserDetailsService {
         //appUser.setRoles((Set<AppRole>) appRoleRepository.findByRole(Role.ROLE_USER));
         appUser.setRoles(Set.of(userRole));
         appUser.setProfileImageUrl(getTemporaryProfileImageUrl(email));
+        //appUser.setShoppingSession(shoppingSession);
         appUserRepository.save(appUser);
         //saveProfileImage(appUser, profileImage);
 
@@ -155,13 +153,13 @@ public class AppUserService implements UserDetailsService {
     }
 
     public AppUserDto updateUser(String currentEmail, String newFirstName, String newLastName, String newEmail, MultipartFile profileImage) throws UserNotFoundException, EmailExistException, IOException, NotAnImageFileException {
-        AppUser currentUser = validateNewUserEmail(currentEmail, newEmail);
-        currentUser.setFirstName(newFirstName);
-        currentUser.setLastName(newLastName);
-        currentUser.setEmail(newEmail);
-        appUserRepository.save(currentUser);
-        saveProfileImage(currentUser, profileImage);
-        return appUserMapper.convertToDto(currentUser);
+        AppUser appUser = validateNewUserEmail(currentEmail, newEmail);
+        appUser.setFirstName(newFirstName);
+        appUser.setLastName(newLastName);
+        appUser.setEmail(newEmail);
+        appUserRepository.save(appUser);
+        saveProfileImage(appUser, profileImage);
+        return appUserMapper.convertToDto(appUser);
     }
 
     @Transactional
@@ -176,6 +174,25 @@ public class AppUserService implements UserDetailsService {
         appUserRepository.save(appUser);
         return appUserMapper.convertToDto(appUser);
     }
+
+    public AppUserDto updateUserEmail(String currentEmail, String newEmail) throws UserNotFoundException, EmailExistException{
+        AppUser appUser = validateNewUserEmail(currentEmail, newEmail);
+        appUser.setEmail(newEmail);
+        appUserRepository.save(appUser);
+        return appUserMapper.convertToDto(appUser);
+    }
+
+    public AppUserDto updateUserPassword(String userEmail, String currentPassword, String newPassword) throws CurrentPasswordException {
+        AppUser appUser = appUserRepository.findAppUserByEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + userEmail + " was found")));
+        if(passwordEncoder.matches(currentPassword, appUser.getPassword())){
+            appUser.setPassword(passwordEncoder.encode(newPassword));
+            appUserRepository.save(appUser);
+        }else{
+            throw new CurrentPasswordException(CURRENT_PASSWORD_DOES_NOT_MATCH);
+        }
+        return appUserMapper.convertToDto(appUser);
+    }
+
 
     private void saveProfileImage(AppUser user, MultipartFile profileImage) throws IOException, NotAnImageFileException {
         if (profileImage != null) {
@@ -224,29 +241,18 @@ public class AppUserService implements UserDetailsService {
 
     @Transactional
     public AppUserDto addKeyForUser(String activationKey, String userEmail, String productName){
-        ActivationKey newKey = new ActivationKey();
-        Product product = productRepository.findProductByName(productName).orElseThrow(() -> new EntityNotFoundException(String.format("No product with name " + productName + " was found")));
+        ProductKey newKey = new ProductKey();
+        ProductDetails productDetails = productRepository.findProductByProductName(productName).orElseThrow(() -> new EntityNotFoundException(String.format("No product with name " + productName + " was found")));
         AppUser appUser = appUserRepository.findAppUserByEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + userEmail + " was found")));
 
-        newKey.setKeyValue(activationKey);
-        newKey.setUser(appUser);
-        newKey.setProduct(product);
-        activationKeyRepository.save(newKey);
-
-        appUser.setActivationKeys(appUser.getActivationKeys());
-
-        System.out.println(appUser.getActivationKeys().toString());
-
-//        newKey.setProductKey(activationKey);
-//        newKey.setProduct(product);
+//        newKey.setKeyValue(activationKey);
 //        newKey.setUser(appUser);
-//        appUser.getActivationKeys().add(newKey);
-
-
-//        newKey.setProductKey(activationKey);
-//        newKey.setUser(appUser);
-//        newKey.setProduct(product);
+//        newKey.setProductDetails(productDetails);
 //        activationKeyRepository.save(newKey);
+//
+//        appUser.setProductKeys(appUser.getProductKeys());
+//
+//        System.out.println(appUser.getProductKeys().toString());
 
 
         return appUserMapper.convertToDto(appUser);
@@ -309,6 +315,7 @@ public class AppUserService implements UserDetailsService {
         AppUser loginUser = appUserRepository.findAppUserByEmail(email).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + email + " was found")));
         return new AppUserDetails(loginUser);
     }
+
 
 
 }

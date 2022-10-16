@@ -12,11 +12,6 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-//@Validated
-//@Data // This replaces the @Getter @Setter @NoArgsConstructor
-
-//@Data
-
 
 //@Table(name="users", uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 //@EqualsAndHashCode
@@ -61,29 +56,6 @@ public class AppUser implements Serializable {
 
     private Boolean isEnabled;
 
-//    public boolean isNotLocked() {
-//        return isLocked;
-//    }
-
-    //    public boolean isEnabled() {
-//        return isEnabled;
-//    }
-
-    // ONE USER CAN HAVE MULTIPLE ROLES -> ONE TO MANY
-    @Column(nullable = false)
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_fk"),
-            inverseJoinColumns = @JoinColumn(name = "role_fk")
-    )
-    private Set<AppRole> roles = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-    //@JsonIgnore
-    //@JsonManagedReference
-    private Set<ActivationKey> activationKeys = new HashSet<>();
-
     // USER CARD:
 
     private String profileImageUrl;
@@ -95,6 +67,32 @@ public class AppUser implements Serializable {
     private String gender;
 
     private Integer age;
+
+    @Column(nullable = false)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_fk"),
+            inverseJoinColumns = @JoinColumn(name = "role_fk")
+    )
+    private Set<AppRole> roles = new HashSet<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "shopping_session_fk", referencedColumnName = "shopping_session_id")
+    //@PrimaryKeyJoinColumn
+    private ShoppingSession shoppingSession;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "inventory_fk", referencedColumnName = "inventory_id")
+    //@PrimaryKeyJoinColumn
+    private Inventory inventory;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    //@JsonIgnore
+    //@JsonManagedReference
+    private Set<OrderDetails> orderDetails = new HashSet<>();
+
+
 
 
 //  @Enumerated(EnumType.STRING)

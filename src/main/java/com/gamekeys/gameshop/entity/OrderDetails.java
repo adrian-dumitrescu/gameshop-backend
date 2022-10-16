@@ -7,32 +7,28 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
-//@Data
-//@EqualsAndHashCode
 @Entity
-@Table(name = "ACTIVATION_KEY")
+@Table(name = "ORDER_DETAILS")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class ActivationKey implements Serializable {
+public class OrderDetails implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "key_id", nullable = false, updatable = false)
+    @Column(name = "order_details_id", nullable = false, updatable = false)
     private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String keyValue;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "user_fk", nullable = false)
     //@JsonBackReference
     private AppUser user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-    @JoinColumn(name = "product_fk", nullable = false)
-    //@JsonBackReference
-    private Product product;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "orderDetails")
+    //@JsonIgnore
+    //@JsonManagedReference
+    private Set<OrderItem> orderItems = new HashSet<>();
 }

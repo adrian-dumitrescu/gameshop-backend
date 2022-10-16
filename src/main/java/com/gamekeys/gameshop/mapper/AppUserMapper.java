@@ -1,14 +1,12 @@
 package com.gamekeys.gameshop.mapper;
 
 import com.gamekeys.gameshop.dto.AppUserDto;
-import com.gamekeys.gameshop.dto.basic.ActivationKeyBasicDto;
-import com.gamekeys.gameshop.entity.ActivationKey;
+import com.gamekeys.gameshop.dto.basic.ProductKeyBasicDto;
 import com.gamekeys.gameshop.entity.AppUser;
+import com.gamekeys.gameshop.entity.ProductKey;
 import com.gamekeys.gameshop.repository.AppUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -33,7 +31,7 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
         appUserDto.setCountry(entity.getCountry());
         appUserDto.setGender(entity.getGender());
         appUserDto.setAge(entity.getAge());
-        appUserDto.setActivationKey(entity.getActivationKeys().stream().map(activationKey -> activationKeyToBasicDto(activationKey)).collect(Collectors.toSet()));
+        //appUserDto.setActivationKey(entity.getProductKeys().stream().map(activationKey -> activationKeyToBasicDto(activationKey)).collect(Collectors.toSet()));
         return appUserDto;
     }
 
@@ -56,13 +54,13 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
         appUser.setGender(dto.getGender());
         appUser.setAge(dto.getAge());
         if(dto.getActivationKey() != null) {
-            appUser.setActivationKeys(appUserRepository.getReferenceById(dto.getId()).getActivationKeys());
+        //    appUser.setProductKeys(appUserRepository.getReferenceById(dto.getId()).getProductKeys());
         }
         return appUser;
     }
 
-    private ActivationKeyBasicDto activationKeyToBasicDto(ActivationKey entity) {
-        ActivationKeyBasicDto result = new ActivationKeyBasicDto();
+    private ProductKeyBasicDto activationKeyToBasicDto(ProductKey entity) {
+        ProductKeyBasicDto result = new ProductKeyBasicDto();
         result.setId(entity.getId());
         result.setKey(entity.getKeyValue());
         return result;

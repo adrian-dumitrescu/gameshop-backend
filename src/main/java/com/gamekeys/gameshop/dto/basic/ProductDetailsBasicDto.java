@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductBasicDto {
+public class ProductDetailsBasicDto {
 
     private Long id;
 

@@ -1,9 +1,9 @@
 package com.gamekeys.gameshop.mapper;
 
-import com.gamekeys.gameshop.dto.ProductDto;
-import com.gamekeys.gameshop.dto.basic.ActivationKeyBasicDto;
-import com.gamekeys.gameshop.entity.ActivationKey;
-import com.gamekeys.gameshop.entity.Product;
+import com.gamekeys.gameshop.dto.ProductDetailsDto;
+import com.gamekeys.gameshop.dto.basic.ProductKeyBasicDto;
+import com.gamekeys.gameshop.entity.ProductKey;
+import com.gamekeys.gameshop.entity.ProductDetails;
 import com.gamekeys.gameshop.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,35 +12,35 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class ProductMapper implements Mapper<Product, ProductDto>{
+public class ProductMapper implements Mapper<ProductDetails, ProductDetailsDto>{
 
     private  ProductRepository productRepository;
 
     @Override
-    public ProductDto convertToDto(Product entity) {
-        ProductDto result = new ProductDto();
+    public ProductDetailsDto convertToDto(ProductDetails entity) {
+        ProductDetailsDto result = new ProductDetailsDto();
         result.setId(entity.getId());
-        result.setName(entity.getName());
+        result.setProductName(entity.getProductName());
         result.setPublisher(entity.getPublisher());
-        result.setActivationKey(entity.getActivationKeys().stream().map(activationKey -> activationKeyToBasicDto(activationKey)).collect(Collectors.toSet()));
+        result.setActivationKey(entity.getProductKeys().stream().map(activationKey -> activationKeyToBasicDto(activationKey)).collect(Collectors.toSet()));
         return result;
     }
 
     @Override
-    public Product convertToEntity(ProductDto dto) {
-        Product result = new Product();
+    public ProductDetails convertToEntity(ProductDetailsDto dto) {
+        ProductDetails result = new ProductDetails();
         result.setId(dto.getId());
-        result.setName(dto.getName());
+        result.setProductName(dto.getProductName());
         result.setPublisher(dto.getPublisher());
         if(dto.getActivationKey() != null) {
-            result.setActivationKeys(productRepository.getReferenceById(dto.getId()).getActivationKeys());
+            result.setProductKeys(productRepository.getReferenceById(dto.getId()).getProductKeys());
         }
         return result;
     }
 
 
-    private ActivationKeyBasicDto activationKeyToBasicDto(ActivationKey entity) {
-        ActivationKeyBasicDto result = new ActivationKeyBasicDto();
+    private ProductKeyBasicDto activationKeyToBasicDto(ProductKey entity) {
+        ProductKeyBasicDto result = new ProductKeyBasicDto();
         result.setId(entity.getId());
         result.setKey(entity.getKeyValue());
         return result;

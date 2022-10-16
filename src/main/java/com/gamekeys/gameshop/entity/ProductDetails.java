@@ -13,32 +13,32 @@ import java.util.Set;
 //@Data
 //@EqualsAndHashCode
 @Entity
-@Table(name = "PRODUCT")
+@Table(name = "PRODUCT_DETAILS")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Product implements Serializable {
+public class ProductDetails implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id", nullable = false, updatable = false)
+    @Column(name = "product_details_id", nullable = false, updatable = false)
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name;
+    private String productName;
 
     @Column(nullable = false)
     private String publisher;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "productDetails")
     //@JsonManagedReference
     //@JsonIgnore
-    private Set<ActivationKey> activationKeys = new HashSet<>();
+    private Set<ProductKey> productKeys = new HashSet<>();
 
-    public Product(Long id, String name, String publisher) {
+    public ProductDetails(Long id, String productName, String publisher) {
         this.id = id;
-        this.name = name;
+        this.productName = productName;
         this.publisher = publisher;
     }
 }

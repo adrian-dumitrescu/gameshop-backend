@@ -3,8 +3,8 @@ package com.gamekeys.gameshop.controller;
 import com.gamekeys.gameshop.dto.AppUserDto;
 import com.gamekeys.gameshop.dto.LoginDto;
 import com.gamekeys.gameshop.entity.AppUserDetails;
-import com.gamekeys.gameshop.entity.enums.Role;
 import com.gamekeys.gameshop.exception.ExceptionHandling;
+import com.gamekeys.gameshop.exception.domain.CurrentPasswordException;
 import com.gamekeys.gameshop.exception.domain.EmailExistException;
 import com.gamekeys.gameshop.exception.domain.NotAnImageFileException;
 import com.gamekeys.gameshop.exception.domain.UserNotFoundException;
@@ -80,17 +80,17 @@ public class AppUserController extends ExceptionHandling {
         return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<AppUserDto> createNewUser(@RequestParam("firstName") String firstName,
-                                                 @RequestParam("lastName") String lastName,
-                                                 @RequestParam("username") String username,
-                                                 @RequestParam("email") String email,
-                                                 @RequestParam("role") String role,
-                                                 @RequestParam("isActive") String isActive,
-                                                 @RequestParam("isNonLocked") String isNonLocked) throws UserNotFoundException, EmailExistException, IOException {
-        AppUserDto newUser = appUserService.createNewUser(firstName, lastName, username, email, Role.valueOf(role), Boolean.parseBoolean(isNonLocked), Boolean.parseBoolean(isActive));
-        return new ResponseEntity<>(newUser, OK);
-    }
+//    @PostMapping("/create")
+//    public ResponseEntity<AppUserDto> createNewUser(@RequestParam("firstName") String firstName,
+//                                                 @RequestParam("lastName") String lastName,
+//                                                 @RequestParam("username") String username,
+//                                                 @RequestParam("email") String email,
+//                                                 @RequestParam("role") String role,
+//                                                 @RequestParam("isActive") String isActive,
+//                                                 @RequestParam("isNonLocked") String isNonLocked) throws UserNotFoundException, EmailExistException, IOException {
+//        AppUserDto newUser = appUserService.createNewUser(firstName, lastName, username, email, Role.valueOf(role), Boolean.parseBoolean(isNonLocked), Boolean.parseBoolean(isActive));
+//        return new ResponseEntity<>(newUser, OK);
+//    }
 
     @PutMapping("/update")
     public ResponseEntity<AppUserDto> updateUser(@RequestParam("currentEmail") String currentEmail,
@@ -103,15 +103,30 @@ public class AppUserController extends ExceptionHandling {
         return new ResponseEntity<>(updateUser, HttpStatus.OK);
     }
 
-    @PostMapping("/update/card")
+    @PutMapping("/update/card")
     public ResponseEntity<AppUserDto> updateUserCard(@RequestParam("email") String email,
                                                      @RequestParam("firstName") String firstName,
                                                      @RequestParam("lastName") String lastName,
                                                      @RequestParam("nickname") String nickname,
                                                      @RequestParam("gender") String gender,
                                                      @RequestParam("country") String country,
-                                                     @RequestParam("age") Integer age) throws UserNotFoundException, EmailExistException, IOException {
+                                                     @RequestParam("age") Integer age) {
         AppUserDto updatedUser = appUserService.updateUserCard(email, firstName, lastName, nickname, gender, country, age);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @PutMapping("/update/email")
+    public ResponseEntity<AppUserDto> updateUserEmail(@RequestParam("currentEmail") String currentEmail,
+                                                      @RequestParam("newEmail") String newEmail) throws UserNotFoundException, EmailExistException{
+        AppUserDto updatedUser = appUserService.updateUserEmail(currentEmail, newEmail);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @PutMapping("/update/password")
+    public ResponseEntity<AppUserDto> updateUserPassword(@RequestParam("email") String email,
+                                                         @RequestParam("currentPassword") String currentPassword,
+                                                         @RequestParam("newPassword") String newPassword) throws CurrentPasswordException {
+        AppUserDto updatedUser = appUserService.updateUserPassword(email, currentPassword, newPassword);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
@@ -122,7 +137,7 @@ public class AppUserController extends ExceptionHandling {
     }
 
     // This is when there gas been a selected profile picture added to the user
-    // It's gonna go into the path and get the image
+    // It's going into the path and gets the image
     @GetMapping(path = "/image/{email}/{fileName}", produces = IMAGE_JPEG_VALUE)
     public byte[] getProfileImage(@PathVariable("email") String username, @PathVariable("fileName") String fileName) throws IOException {
         //"user.home" + "/gameshop/user/{email}/{email.jpg}

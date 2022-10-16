@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActivationKeyBasicDto {
+public class ProductKeyBasicDto {
 
     private Long id;
 

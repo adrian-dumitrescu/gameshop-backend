@@ -1,6 +1,6 @@
 package com.gamekeys.gameshop.dto;
 
-import com.gamekeys.gameshop.dto.basic.ActivationKeyBasicDto;
+import com.gamekeys.gameshop.dto.basic.ProductKeyBasicDto;
 import com.gamekeys.gameshop.entity.AppRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,7 +38,7 @@ public class AppUserDto {
 
     private Boolean isEnabled;
 
-    private Set<ActivationKeyBasicDto> activationKey;
+    private Set<ProductKeyBasicDto> activationKey;
 
     // USER CARD:
     private String profileImageUrl;
