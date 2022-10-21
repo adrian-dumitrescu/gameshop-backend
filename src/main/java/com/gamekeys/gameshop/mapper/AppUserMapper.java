@@ -1,12 +1,18 @@
 package com.gamekeys.gameshop.mapper;
 
-import com.gamekeys.gameshop.dto.AppUserDto;
-import com.gamekeys.gameshop.dto.basic.ProductKeyBasicDto;
-import com.gamekeys.gameshop.entity.AppUser;
-import com.gamekeys.gameshop.entity.ProductKey;
+import com.gamekeys.gameshop.dto.model.AppUserDto;
+import com.gamekeys.gameshop.dto.basic.InventoryBasicDto;
+import com.gamekeys.gameshop.dto.basic.OrderDetailsBasicDto;
+import com.gamekeys.gameshop.dto.basic.ShoppingCartBasicDto;
+import com.gamekeys.gameshop.model.AppUser;
+import com.gamekeys.gameshop.model.Inventory;
+import com.gamekeys.gameshop.model.OrderDetails;
+import com.gamekeys.gameshop.model.ShoppingCart;
 import com.gamekeys.gameshop.repository.AppUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -16,53 +22,86 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
 
     @Override
     public AppUserDto convertToDto(AppUser entity) {
-        AppUserDto appUserDto = new AppUserDto();
-        appUserDto.setId(entity.getId());
-        appUserDto.setFirstName(entity.getFirstName());
-        appUserDto.setLastName(entity.getLastName());
-        appUserDto.setEmail(entity.getEmail());
-        appUserDto.setPassword(entity.getPassword());
-        appUserDto.setRoles(entity.getRoles());
-        appUserDto.setProfileImageUrl(entity.getProfileImageUrl());
-        appUserDto.setJoinDate(entity.getJoinDate());
-        appUserDto.setIsNotLocked(entity.getIsNotLocked());
-        appUserDto.setIsEnabled(entity.getIsEnabled());
-        appUserDto.setNickname(entity.getNickname());
-        appUserDto.setCountry(entity.getCountry());
-        appUserDto.setGender(entity.getGender());
-        appUserDto.setAge(entity.getAge());
-        //appUserDto.setActivationKey(entity.getProductKeys().stream().map(activationKey -> activationKeyToBasicDto(activationKey)).collect(Collectors.toSet()));
-        return appUserDto;
+        AppUserDto result = new AppUserDto();
+        result.setId(entity.getId());
+        result.setFirstName(entity.getFirstName());
+        result.setLastName(entity.getLastName());
+        result.setEmail(entity.getEmail());
+        result.setPassword(entity.getPassword());
+        result.setRoles(entity.getRoles());
+        result.setProfileImageUrl(entity.getProfileImageUrl());
+        result.setJoinDate(entity.getJoinDate());
+        result.setIsNotLocked(entity.getIsNotLocked());
+        result.setIsEnabled(entity.getIsEnabled());
+        result.setNickname(entity.getNickname());
+        result.setCountry(entity.getCountry());
+        result.setGender(entity.getGender());
+        result.setAge(entity.getAge());
+        if(entity.getShoppingCart() != null) {
+            result.setShoppingCart(shoppingCartToBasicDto(entity.getShoppingCart()));
+        }
+        if(entity.getOrderDetails() != null) {
+            result.setOrderDetails(entity.getOrderDetails().stream().map(orderDetails -> orderDetailsToBasicDto(orderDetails)).collect(Collectors.toSet()));
+        }
+        if(entity.getInventory() != null) {
+            result.setInventory(inventoryToBasicDto(entity.getInventory()));
+        }
+        return result;
     }
 
 
     @Override
     public AppUser convertToEntity(AppUserDto dto) {
-        AppUser appUser = new AppUser();
-        appUser.setId(dto.getId());
-        appUser.setFirstName(dto.getFirstName());
-        appUser.setLastName(dto.getLastName());
-        appUser.setEmail(dto.getEmail());
-        appUser.setPassword(dto.getPassword());
-        appUser.setRoles(dto.getRoles());
-        appUser.setProfileImageUrl(dto.getProfileImageUrl());
-        appUser.setJoinDate(dto.getJoinDate());
-        appUser.setIsEnabled(dto.getIsNotLocked());
-        appUser.setIsEnabled(dto.getIsEnabled());
-        appUser.setNickname(dto.getNickname());
-        appUser.setCountry(dto.getCountry());
-        appUser.setGender(dto.getGender());
-        appUser.setAge(dto.getAge());
-        if(dto.getActivationKey() != null) {
-        //    appUser.setProductKeys(appUserRepository.getReferenceById(dto.getId()).getProductKeys());
+        AppUser result = new AppUser();
+        result.setId(dto.getId());
+        result.setFirstName(dto.getFirstName());
+        result.setLastName(dto.getLastName());
+        result.setEmail(dto.getEmail());
+        result.setPassword(dto.getPassword());
+        result.setRoles(dto.getRoles());
+        result.setProfileImageUrl(dto.getProfileImageUrl());
+        result.setJoinDate(dto.getJoinDate());
+        result.setIsEnabled(dto.getIsNotLocked());
+        result.setIsEnabled(dto.getIsEnabled());
+        result.setNickname(dto.getNickname());
+        result.setCountry(dto.getCountry());
+        result.setGender(dto.getGender());
+        result.setAge(dto.getAge());
+        if(dto.getShoppingCart() != null) {
+            result.setShoppingCart(appUserRepository.getReferenceById(dto.getId()).getShoppingCart());
         }
-        return appUser;
+        if(dto.getOrderDetails() != null){
+            result.setOrderDetails(appUserRepository.getReferenceById(dto.getId()).getOrderDetails());
+        }
+        if(dto.getInventory() != null){
+            result.setInventory(appUserRepository.getReferenceById(dto.getId()).getInventory());
+        }
+        return result;
     }
 
-    private ProductKeyBasicDto activationKeyToBasicDto(ProductKey entity) {
-        ProductKeyBasicDto result = new ProductKeyBasicDto();
+    private ShoppingCartBasicDto shoppingCartToBasicDto(ShoppingCart entity) {
+        ShoppingCartBasicDto result = new ShoppingCartBasicDto();
         result.setId(entity.getId());
-        result.setKey(entity.getKeyValue());
+        result.setTotal(entity.getTotal());
+        result.setCreatedAt(entity.getCreatedAt());
+        result.setModifiedAt(entity.getModifiedAt());
+        return result;
+    }
+
+    private OrderDetailsBasicDto orderDetailsToBasicDto(OrderDetails entity) {
+        OrderDetailsBasicDto result = new OrderDetailsBasicDto();
+        result.setId(entity.getId());
+        result.setTotal(entity.getTotal());
+        result.setCreatedAt(entity.getCreatedAt());
+        result.setModifiedAt(entity.getModifiedAt());
+        return result;
+    }
+
+    private InventoryBasicDto inventoryToBasicDto(Inventory entity) {
+        InventoryBasicDto result = new InventoryBasicDto();
+        result.setId(entity.getId());
+        result.setTotalSold(entity.getTotalSold());
+        result.setListed(entity.getListed());
         return result;
     }
 

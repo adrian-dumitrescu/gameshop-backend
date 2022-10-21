@@ -1,6 +1,6 @@
 package com.gamekeys.gameshop.repository;
 
-import com.gamekeys.gameshop.entity.AppUser;
+import com.gamekeys.gameshop.model.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,5 +22,6 @@ public interface AppUserRepository extends JpaRepository <AppUser, Long> {
     Optional<AppUser> findAppUserByEmailAndPassword(String email, String password);
 
     Optional<AppUser> findAppUserById(Long id);
+
 
 }

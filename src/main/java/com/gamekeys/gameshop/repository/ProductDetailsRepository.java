@@ -1,17 +1,15 @@
 package com.gamekeys.gameshop.repository;
 
-import com.gamekeys.gameshop.model.enums.Role;
-import com.gamekeys.gameshop.model.AppRole;
+import com.gamekeys.gameshop.model.ProductDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Repository
 @Transactional(readOnly = true)
-public interface AppRoleRepository extends JpaRepository<AppRole, Long> {
+public interface ProductDetailsRepository extends JpaRepository<ProductDetails, Long> {
 
-    //@Query("SELECT r FROM AppRole r WHERE r.role = ?1")
-    public AppRole findByRole(Role role);
-
-
+    Optional<ProductDetails> findProductByTitle(String productTitle);
 }

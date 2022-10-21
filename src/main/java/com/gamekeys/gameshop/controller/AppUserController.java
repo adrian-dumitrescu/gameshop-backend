@@ -1,14 +1,14 @@
 package com.gamekeys.gameshop.controller;
 
-import com.gamekeys.gameshop.dto.AppUserDto;
-import com.gamekeys.gameshop.dto.LoginDto;
-import com.gamekeys.gameshop.entity.AppUserDetails;
+import com.gamekeys.gameshop.dto.model.AppUserDto;
+import com.gamekeys.gameshop.dto.functional.LoginDto;
+import com.gamekeys.gameshop.model.AppUserDetails;
 import com.gamekeys.gameshop.exception.ExceptionHandling;
 import com.gamekeys.gameshop.exception.domain.CurrentPasswordException;
 import com.gamekeys.gameshop.exception.domain.EmailExistException;
 import com.gamekeys.gameshop.exception.domain.NotAnImageFileException;
 import com.gamekeys.gameshop.exception.domain.UserNotFoundException;
-import com.gamekeys.gameshop.misc.HttpResponse;
+import com.gamekeys.gameshop.controller.misc.HttpResponse;
 import com.gamekeys.gameshop.service.AppUserService;
 import com.gamekeys.gameshop.token.JWTTokenProvider;
 import lombok.AllArgsConstructor;
@@ -26,6 +26,7 @@ import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -56,17 +57,6 @@ public class AppUserController extends ExceptionHandling {
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-//    @GetMapping("/login/{email}/{password}")
-//    public ResponseEntity<AppUserDto> loginUser(@PathVariable("email") String email, @PathVariable("password") String password) {
-//        authenticate(email, password);
-//        // Get the userDetails in order to generate the JWT header
-//        AppUserDetails appUserDetails = appUserService.getUserDetails(email);
-//        HttpHeaders jwtHeader = getJwtHeader(appUserDetails);
-////        AppUser appUser = appUserDetails.getAppUser();
-////        Set<AppRole> userRole = appUser.getRoles();
-//        AppUserDto loginUser = appUserService.findAppUserByEmail(email);
-//        return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
-//    }
 
     @PostMapping("/login")
     public ResponseEntity<AppUserDto> loginUser(@RequestBody LoginDto loginDto) {
@@ -97,8 +87,8 @@ public class AppUserController extends ExceptionHandling {
                                                  @RequestParam("firstName") String firstName,
                                                  @RequestParam("lastName") String lastName,
                                                  @RequestParam("email") String newEmail,
-                                                 @RequestParam(value = "profileImage", required = false)
-                                                 MultipartFile profileImage) throws UserNotFoundException, EmailExistException, IOException, NotAnImageFileException {
+                                                 @RequestParam(value = "profileImage", required = false) MultipartFile profileImage)
+            throws UserNotFoundException, EmailExistException, IOException, NotAnImageFileException {
         AppUserDto updateUser = appUserService.updateUser(currentEmail, firstName, lastName, newEmail, profileImage);
         return new ResponseEntity<>(updateUser, HttpStatus.OK);
     }
@@ -183,11 +173,21 @@ public class AppUserController extends ExceptionHandling {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/add/{activationKey}/{userEmail}/{productName}")
-    public ResponseEntity<AppUserDto> addKeyForUser(@PathVariable("activationKey") String activationKey, @PathVariable("userEmail") String userEmail, @PathVariable("productName") String productName) {
-        AppUserDto appUserDto = appUserService.addKeyForUser(activationKey, userEmail, productName);
+//    @PostMapping("/add/{activationKey}/{userEmail}/{productName}")
+//    public ResponseEntity<AppUserDto> addKeyForUser(@PathVariable("activationKey") String activationKey, @PathVariable("userEmail") String userEmail, @PathVariable("productName") String productName) {
+//        AppUserDto appUserDto = appUserService.addKeyForUser(activationKey, userEmail, productName);
+//        return new ResponseEntity<>(appUserDto, OK);
+//    }
+
+    @PostMapping("/add/key")
+    public ResponseEntity<AppUserDto> addKeyToInventory(@RequestParam("productKey") String productKey,
+                                                        @RequestParam("userEmail") String userEmail,
+                                                        @RequestParam("productTitle") String productName,
+                                                        @RequestParam("productKeyPrice") BigDecimal productKeyPrice){
+        AppUserDto appUserDto = appUserService.addKeyToInventory(productKey, productKeyPrice,userEmail, productName);
         return new ResponseEntity<>(appUserDto, OK);
     }
+
 
 
     private void authenticate(String username, String password) {

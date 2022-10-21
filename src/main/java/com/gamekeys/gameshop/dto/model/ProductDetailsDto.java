@@ -1,15 +1,16 @@
-package com.gamekeys.gameshop.dto.basic;
+package com.gamekeys.gameshop.dto.model;
 
+import com.gamekeys.gameshop.dto.basic.ProductKeyBasicDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.validation.annotation.Validated;
+
+import java.util.Set;
 
 @Data // This replaces the @Getter @Setter @NoArgsConstructor
-@Validated
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDetailsBasicDto {
+public class ProductDetailsDto {
 
     private Long id;
 
@@ -17,5 +18,6 @@ public class ProductDetailsBasicDto {
 
     private String publisher;
 
-    // No reference to Set<ProductKey> productKeys
+    private Set<ProductKeyBasicDto> productKeys;
+
 }

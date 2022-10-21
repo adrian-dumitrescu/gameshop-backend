@@ -1,15 +1,12 @@
 package com.gamekeys.gameshop.service;
 
-import com.gamekeys.gameshop.dto.AppUserDto;
-import com.gamekeys.gameshop.entity.*;
-import com.gamekeys.gameshop.entity.enums.Role;
+import com.gamekeys.gameshop.dto.model.AppUserDto;
+import com.gamekeys.gameshop.model.*;
+import com.gamekeys.gameshop.model.enums.Role;
 import com.gamekeys.gameshop.exception.domain.*;
-import com.gamekeys.gameshop.mapper.ActivationKeyMapper;
+import com.gamekeys.gameshop.mapper.ProductKeyMapper;
 import com.gamekeys.gameshop.mapper.AppUserMapper;
-import com.gamekeys.gameshop.repository.ActivationKeyRepository;
-import com.gamekeys.gameshop.repository.AppRoleRepository;
-import com.gamekeys.gameshop.repository.AppUserRepository;
-import com.gamekeys.gameshop.repository.ProductRepository;
+import com.gamekeys.gameshop.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,13 +48,16 @@ public class AppUserService implements UserDetailsService {
 
     private final AppUserRepository appUserRepository;
     private final AppRoleRepository appRoleRepository;
-    private final ProductRepository productRepository;
-    private final ActivationKeyRepository activationKeyRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
-    private final LoginAttemptService loginAttemptService;
-    private final AppUserMapper appUserMapper;
+    private final ProductDetailsRepository productDetailsRepository;
+    private final ProductKeyRepository productKeyRepository;
+    private final InventoryRepository inventoryRepository;
 
-    private final ActivationKeyMapper activationKeyMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    private final LoginAttemptService loginAttemptService;
+
+    private final AppUserMapper appUserMapper;
+    private final ProductKeyMapper productKeyMapper;
 
 
     @Override
@@ -132,6 +133,7 @@ public class AppUserService implements UserDetailsService {
     public AppUserDto createNewUser(String firstName, String lastName, String email, String password, Role role, boolean isNotLocked, boolean isEnabled) throws UserNotFoundException, EmailExistException, IOException {
         validateNewUserEmail(EMPTY, email);
         AppUser appUser = new AppUser();
+        Inventory newUserInventory = new Inventory();
         AppRole userRole = appRoleRepository.findByRole(role);
         //userRole.setRole(role);
 
@@ -147,6 +149,9 @@ public class AppUserService implements UserDetailsService {
         appUser.setProfileImageUrl(getTemporaryProfileImageUrl(email));
         //appUser.setShoppingSession(shoppingSession);
         appUserRepository.save(appUser);
+
+        newUserInventory.setUser(appUser);
+        inventoryRepository.save(newUserInventory);
         //saveProfileImage(appUser, profileImage);
 
         return appUserMapper.convertToDto(appUser);
@@ -175,7 +180,7 @@ public class AppUserService implements UserDetailsService {
         return appUserMapper.convertToDto(appUser);
     }
 
-    public AppUserDto updateUserEmail(String currentEmail, String newEmail) throws UserNotFoundException, EmailExistException{
+    public AppUserDto updateUserEmail(String currentEmail, String newEmail) throws UserNotFoundException, EmailExistException {
         AppUser appUser = validateNewUserEmail(currentEmail, newEmail);
         appUser.setEmail(newEmail);
         appUserRepository.save(appUser);
@@ -184,10 +189,10 @@ public class AppUserService implements UserDetailsService {
 
     public AppUserDto updateUserPassword(String userEmail, String currentPassword, String newPassword) throws CurrentPasswordException {
         AppUser appUser = appUserRepository.findAppUserByEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + userEmail + " was found")));
-        if(passwordEncoder.matches(currentPassword, appUser.getPassword())){
+        if (passwordEncoder.matches(currentPassword, appUser.getPassword())) {
             appUser.setPassword(passwordEncoder.encode(newPassword));
             appUserRepository.save(appUser);
-        }else{
+        } else {
             throw new CurrentPasswordException(CURRENT_PASSWORD_DOES_NOT_MATCH);
         }
         return appUserMapper.convertToDto(appUser);
@@ -240,20 +245,30 @@ public class AppUserService implements UserDetailsService {
     }
 
     @Transactional
-    public AppUserDto addKeyForUser(String activationKey, String userEmail, String productName){
-        ProductKey newKey = new ProductKey();
-        ProductDetails productDetails = productRepository.findProductByProductName(productName).orElseThrow(() -> new EntityNotFoundException(String.format("No product with name " + productName + " was found")));
+    public AppUserDto addKeyToInventory(String productKeyValue, BigDecimal productKeyPrice, String userEmail, String productName) {
+
+        // add price for product key
+        // increment listed inventory
         AppUser appUser = appUserRepository.findAppUserByEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + userEmail + " was found")));
+        ProductDetails productDetails = productDetailsRepository.findProductByTitle(productName).orElseThrow(() -> new EntityNotFoundException(String.format("No product with name " + productName + " was found")));
+        ProductKey newKey = new ProductKey();
 
-//        newKey.setKeyValue(activationKey);
-//        newKey.setUser(appUser);
-//        newKey.setProductDetails(productDetails);
-//        activationKeyRepository.save(newKey);
-//
-//        appUser.setProductKeys(appUser.getProductKeys());
-//
-//        System.out.println(appUser.getProductKeys().toString());
+        Optional<Inventory> userInventory = Optional.ofNullable(appUser.getInventory());
+        if (userInventory.isEmpty()) {
+            Inventory newUserInventory = new Inventory();
+            inventoryRepository.save(newUserInventory);
 
+            appUser.setInventory(newUserInventory);
+            newKey.setInventory(newUserInventory);
+        } else {
+            newKey.setInventory(userInventory.get());
+        }
+
+        newKey.setActivationKey(productKeyValue);
+        newKey.setProductDetails(productDetails);
+        newKey.setPrice(productKeyPrice);
+        appUserRepository.save(appUser);
+        productKeyRepository.save(newKey);
 
         return appUserMapper.convertToDto(appUser);
     }
@@ -286,8 +301,6 @@ public class AppUserService implements UserDetailsService {
     }
 
 
-
-
     private AppUser validateNewUserEmail(String currentEmail, String newEmail) throws UserNotFoundException, EmailExistException {
 
         Optional<AppUser> userWithNewEmail = appUserRepository.findAppUserByEmail(newEmail);
@@ -315,7 +328,6 @@ public class AppUserService implements UserDetailsService {
         AppUser loginUser = appUserRepository.findAppUserByEmail(email).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + email + " was found")));
         return new AppUserDetails(loginUser);
     }
-
 
 
 }

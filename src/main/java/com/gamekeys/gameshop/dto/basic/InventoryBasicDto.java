@@ -5,26 +5,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
-import java.math.BigDecimal;
-
 @Data // This replaces the @Getter @Setter @NoArgsConstructor
 @Validated
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductKeyBasicDto {
+public class InventoryBasicDto {
 
     private Long id;
 
-    private String activationKey;
+    private Integer totalSold;
 
-    private BigDecimal price;
+    private Integer listed;
 
-    // No reference to Inventory inventory;
+    // No reference to AppUser user
 
-    // No reference to ProductDetails productDetails;
-
-    // No reference to OrderItem orderItem;
-
+    // No reference to  Set<ProductKey> productKeys
 
 }
-

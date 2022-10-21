@@ -1,5 +1,8 @@
-package com.gamekeys.gameshop.dto.basic;
+package com.gamekeys.gameshop.dto.model;
 
+import com.gamekeys.gameshop.dto.basic.InventoryBasicDto;
+import com.gamekeys.gameshop.dto.basic.OrderDetailsBasicDto;
+import com.gamekeys.gameshop.dto.basic.ShoppingCartBasicDto;
 import com.gamekeys.gameshop.model.AppRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +17,7 @@ import java.util.Set;
 @Validated
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppUserBasicDto {
+public class AppUserDto {
 
     private Long id;
     //@NotEmpty
@@ -48,11 +51,13 @@ public class AppUserBasicDto {
 
     private Set<AppRole> roles;
 
-    // No reference to ShoppingCart shoppingCart;
+    private ShoppingCartBasicDto shoppingCart;
 
-    // No reference to OrderDetails orderDetails
+    private Set<OrderDetailsBasicDto> orderDetails;
 
-    // No reference to Inventory inventory;
-
+    private InventoryBasicDto inventory;
 
 }
+
+// NotNull does not work on DTO's
+// Use NotEmpty

@@ -2,7 +2,7 @@ package com.gamekeys.gameshop.token.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gamekeys.gameshop.constant.SecurityConstant;
-import com.gamekeys.gameshop.misc.HttpResponse;
+import com.gamekeys.gameshop.controller.misc.HttpResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;

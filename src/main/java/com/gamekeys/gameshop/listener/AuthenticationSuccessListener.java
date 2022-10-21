@@ -1,6 +1,6 @@
 package com.gamekeys.gameshop.listener;
 
-import com.gamekeys.gameshop.entity.AppUserDetails;
+import com.gamekeys.gameshop.model.AppUserDetails;
 import com.gamekeys.gameshop.service.LoginAttemptService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.event.EventListener;

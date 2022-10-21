@@ -6,25 +6,24 @@ import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data // This replaces the @Getter @Setter @NoArgsConstructor
 @Validated
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductKeyBasicDto {
+public class OrderDetailsBasicDto {
 
     private Long id;
 
-    private String activationKey;
+    private BigDecimal total;
 
-    private BigDecimal price;
+    private LocalDateTime createdAt;
 
-    // No reference to Inventory inventory;
+    private LocalDateTime modifiedAt;
 
-    // No reference to ProductDetails productDetails;
+    // No reference to AppUserBasicDto user;
 
-    // No reference to OrderItem orderItem;
-
+    // No reference to Set<OrderItemBasicDto> orderItems;
 
 }
-

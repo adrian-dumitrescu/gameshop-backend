@@ -2,7 +2,7 @@ package com.gamekeys.gameshop.exception;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.gamekeys.gameshop.exception.domain.*;
-import com.gamekeys.gameshop.misc.HttpResponse;
+import com.gamekeys.gameshop.controller.misc.HttpResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;

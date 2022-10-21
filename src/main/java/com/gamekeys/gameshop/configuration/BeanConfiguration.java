@@ -1,13 +1,15 @@
 package com.gamekeys.gameshop.configuration;
 
-import com.gamekeys.gameshop.entity.AppRole;
-import com.gamekeys.gameshop.entity.ProductDetails;
-import com.gamekeys.gameshop.entity.ShoppingSession;
-import com.gamekeys.gameshop.entity.enums.Role;
+import com.gamekeys.gameshop.model.AppRole;
+import com.gamekeys.gameshop.model.ProductDetails;
+import com.gamekeys.gameshop.model.ShoppingCart;
+import com.gamekeys.gameshop.model.enums.ProductPublisher;
+import com.gamekeys.gameshop.model.enums.ProductTitle;
+import com.gamekeys.gameshop.model.enums.Role;
 import com.gamekeys.gameshop.repository.*;
-import com.gamekeys.gameshop.service.ActivationKeyService;
+import com.gamekeys.gameshop.service.ProductKeyService;
 import com.gamekeys.gameshop.service.AppUserService;
-import com.gamekeys.gameshop.service.ProductService;
+import com.gamekeys.gameshop.service.ProductDetailsService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -29,11 +31,11 @@ public class BeanConfiguration {
     CommandLineRunner run(AppUserService appUserService,
                           AppUserRepository appUserRepository,
                           AppRoleRepository appRoleRepository,
-                          ActivationKeyService activationKeyService,
-                          ActivationKeyRepository activationKeyRepository,
-                          ProductRepository productRepository,
-                          ProductService productService,
-                          ShoppingSessionRepository shoppingSessionRepository) {
+                          ProductKeyService productKeyService,
+                          ProductKeyRepository productKeyRepository,
+                          ProductDetailsRepository productDetailsRepository,
+                          ProductDetailsService productDetailsService,
+                          ShoppingCartRepository shoppingCartRepository) {
 
         return args -> {
 
@@ -47,12 +49,17 @@ public class BeanConfiguration {
             appUserService.createNewUser("Ioana", "Marin", "ioana.marin@gmail.com", "ioanaA94!", Role.ROLE_SUPER_ADMIN, true, true);
             //appUserService.registerUser(new AppUserDto("Adrian", "Dumitrescu", "dumitrescu.adrian121@gmail.com", "adrianN94!"));
             //appUserService.registerUser(new AppUserDto("Ioana", "Marin", "ioana.marin@gmail.com", "ioanaA94!"));
-            ProductDetails overwatch = new ProductDetails(null, "Overwatch", "Blizzard Entertainment");
-            productRepository.save(overwatch);
+            ProductDetails overwatch2 = new ProductDetails(null, ProductTitle.OVERWATCH_2.getTitle(), ProductPublisher.BLIZZARD_ENTERTAINMENT.getPublisher());
+            ProductDetails diablo4 = new ProductDetails(null, ProductTitle.DIABLO_4.getTitle(), ProductPublisher.BLIZZARD_ENTERTAINMENT.getPublisher());
+            ProductDetails ds3 = new ProductDetails(null, ProductTitle.DARK_SOULS_3.getTitle(), ProductPublisher.FROM_SOFTWARE.getPublisher());
+            ProductDetails dyingLight2 = new ProductDetails(null, ProductTitle.DYING_LIGHT_2.getTitle(), ProductPublisher.TECHLAND.getPublisher());
+            ProductDetails destiny2 = new ProductDetails(null, ProductTitle.DESTINY_2.getTitle(), ProductPublisher.ACTIVISION.getPublisher());
 
-            ShoppingSession ioanaShoppingSession = new ShoppingSession();
-            ioanaShoppingSession.setUser(appUserRepository.getReferenceById(1L));
-            shoppingSessionRepository.save(ioanaShoppingSession);
+            productDetailsRepository.saveAll(List.of(overwatch2, diablo4, ds3, dyingLight2, destiny2));
+
+            ShoppingCart ioanaShoppingCart = new ShoppingCart();
+            ioanaShoppingCart.setUser(appUserRepository.getReferenceById(1L));
+            shoppingCartRepository.save(ioanaShoppingCart);
 
 //            ProductKey productKey = new ProductKey();
 //            productKey.setKeyValue("231412412");
