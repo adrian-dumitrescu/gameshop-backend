@@ -1,7 +1,7 @@
 package com.gamekeys.gameshop.token.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gamekeys.gameshop.controller.misc.HttpResponse;
+import com.gamekeys.gameshop.controller.http.HttpResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;

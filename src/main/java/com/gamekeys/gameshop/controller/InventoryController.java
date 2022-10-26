@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
@@ -32,14 +33,12 @@ public class InventoryController {
                                                         @RequestParam("productTitle") String productTitle,
                                                         @RequestParam("productKeyPrice") BigDecimal productKeyPrice){
         InventoryDto userInventory = inventoryService.addKeyToUserInventory(activationKey, productKeyPrice, userEmail, productTitle);
-        return new ResponseEntity<>(userInventory, OK);
+        return new ResponseEntity<>(userInventory, CREATED);
     }
 
-
-
     @DeleteMapping("/delete/key")
-    public ResponseEntity<InventoryDto> removeProductKeyFromInventory(@RequestParam("activationKey") String activationKey,
-                                                                      @RequestParam("userEmail") String userEmail) {
+    public ResponseEntity<InventoryDto> removeKeyFromInventory(@RequestParam("activationKey") String activationKey,
+                                                               @RequestParam("userEmail") String userEmail) {
         InventoryDto userInventory = inventoryService.deleteKeyFromInventory(activationKey, userEmail);
         return new ResponseEntity<>(userInventory, OK);
     }

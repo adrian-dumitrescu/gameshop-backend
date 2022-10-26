@@ -31,7 +31,6 @@ public class ProductKeyService {
         return productKeyMapper.convertToDto(productKey);
     }
 
-
     public List<ProductKeyDto> findAllProductKeysByTitle(String productTitle) {
         Set<ProductKey> productKeys = productKeyRepository.findAllByProductDetailsTitle(productTitle).orElseThrow(() -> new EntityNotFoundException(String.format("There are no keys for title: " + productTitle)));//return productKeyRepository.findAllByInventory_UserEmail(userEmail).stream().map(c -> productKeyMapper.convertToDto(c)).collect(Collectors.toList());
         return productKeys.stream().map(productKey -> productKeyMapper.convertToDto(productKey)).collect(Collectors.toList());

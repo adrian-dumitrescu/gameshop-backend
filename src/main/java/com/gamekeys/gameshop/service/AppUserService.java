@@ -1,11 +1,14 @@
 package com.gamekeys.gameshop.service;
 
 import com.gamekeys.gameshop.dto.model.AppUserDto;
-import com.gamekeys.gameshop.model.*;
-import com.gamekeys.gameshop.model.enums.Role;
 import com.gamekeys.gameshop.exception.domain.*;
-import com.gamekeys.gameshop.mapper.ProductKeyMapper;
 import com.gamekeys.gameshop.mapper.AppUserMapper;
+import com.gamekeys.gameshop.mapper.ProductKeyMapper;
+import com.gamekeys.gameshop.model.AppRole;
+import com.gamekeys.gameshop.model.AppUser;
+import com.gamekeys.gameshop.model.AppUserDetails;
+import com.gamekeys.gameshop.model.Inventory;
+import com.gamekeys.gameshop.model.enums.Role;
 import com.gamekeys.gameshop.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +25,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -244,34 +246,7 @@ public class AppUserService implements UserDetailsService {
         return appUserRepository.findAll().stream().map(c -> appUserMapper.convertToDto(c)).collect(Collectors.toList());
     }
 
-    @Transactional
-    public AppUserDto addKeyToInventory(String productKeyValue, BigDecimal productKeyPrice, String userEmail, String productName) {
 
-        // add price for product key
-        // increment listed inventory
-        AppUser appUser = appUserRepository.findAppUserByEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + userEmail + " was found")));
-        ProductDetails productDetails = productDetailsRepository.findProductByTitle(productName).orElseThrow(() -> new EntityNotFoundException(String.format("No product with name " + productName + " was found")));
-        ProductKey newKey = new ProductKey();
-
-        Optional<Inventory> userInventory = Optional.ofNullable(appUser.getInventory());
-        if (userInventory.isEmpty()) {
-            Inventory newUserInventory = new Inventory();
-            inventoryRepository.save(newUserInventory);
-
-            appUser.setInventory(newUserInventory);
-            newKey.setInventory(newUserInventory);
-        } else {
-            newKey.setInventory(userInventory.get());
-        }
-
-        newKey.setActivationKey(productKeyValue);
-        newKey.setProductDetails(productDetails);
-        newKey.setPrice(productKeyPrice);
-        appUserRepository.save(appUser);
-        productKeyRepository.save(newKey);
-
-        return appUserMapper.convertToDto(appUser);
-    }
 
     public AppUserDto findUserById(Long id) {
         AppUser appUser = appUserRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("No user with id " + id + " was found")));

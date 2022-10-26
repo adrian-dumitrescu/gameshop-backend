@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface ProductDetailsRepository extends JpaRepository<ProductDetails, Long> {
 
     Optional<ProductDetails> findProductByTitle(String productTitle);
+
 }

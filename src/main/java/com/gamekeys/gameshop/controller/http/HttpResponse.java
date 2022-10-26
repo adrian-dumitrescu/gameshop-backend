@@ -1,4 +1,4 @@
-package com.gamekeys.gameshop.controller.misc;
+package com.gamekeys.gameshop.controller.http;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
