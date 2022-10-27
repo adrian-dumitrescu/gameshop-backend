@@ -17,12 +17,14 @@ public class OrderItemBasicDto {
 
     private Integer quantity;
 
+    private String sellerEmail;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime modifiedAt;
 
     // No reference to OrderDetailsBasicDto orderDetails;
 
-    // No reference to ProductKeyBasicDto productKey;
+    // No reference to ProductDetailsBasicDto product;
 
 }

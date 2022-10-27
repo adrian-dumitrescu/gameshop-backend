@@ -24,7 +24,7 @@ public class OrderDetails implements Serializable {
     @Column(name = "order_details_id", nullable = false, updatable = false)
     private Long id;
 
-    private BigDecimal total;
+    private BigDecimal total = BigDecimal.valueOf(0);
 
     private LocalDateTime createdAt;
 

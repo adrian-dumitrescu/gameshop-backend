@@ -21,7 +21,9 @@ public class CartItem implements Serializable {
     @Column(name = "cart_item_id", nullable = false, updatable = false)
     private Long id;
 
-    private Integer quantity;
+    private Integer quantity = 0;
+
+    private String sellerEmail;
 
     private LocalDateTime createdAt;
 
@@ -32,9 +34,9 @@ public class CartItem implements Serializable {
     private ShoppingCart shoppingCart;
 
     @OneToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "product_key_fk", referencedColumnName = "product_key_id")
+    @JoinColumn(name = "product_fk", referencedColumnName = "product_id")
     //@PrimaryKeyJoinColumn
-    private ProductKey productKey;
+    private Product product;
 
 
 }

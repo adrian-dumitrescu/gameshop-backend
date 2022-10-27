@@ -1,6 +1,6 @@
 package com.gamekeys.gameshop.dto.model;
 
-import com.gamekeys.gameshop.dto.basic.ProductKeyBasicDto;
+import com.gamekeys.gameshop.dto.basic.ProductDetailsBasicDto;
 import com.gamekeys.gameshop.dto.basic.ShoppingCartBasicDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,12 +17,14 @@ public class CartItemDto {
 
     private Integer quantity;
 
+    private String sellerEmail;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime modifiedAt;
 
     private ShoppingCartBasicDto shoppingCart;
 
-    private ProductKeyBasicDto productKey;
+    private ProductDetailsBasicDto product;
 
 }

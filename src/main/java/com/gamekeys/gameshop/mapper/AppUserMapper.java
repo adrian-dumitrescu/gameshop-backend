@@ -1,11 +1,11 @@
 package com.gamekeys.gameshop.mapper;
 
 import com.gamekeys.gameshop.dto.model.AppUserDto;
-import com.gamekeys.gameshop.dto.basic.InventoryBasicDto;
+import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
 import com.gamekeys.gameshop.dto.basic.OrderDetailsBasicDto;
 import com.gamekeys.gameshop.dto.basic.ShoppingCartBasicDto;
 import com.gamekeys.gameshop.model.AppUser;
-import com.gamekeys.gameshop.model.Inventory;
+import com.gamekeys.gameshop.model.Product;
 import com.gamekeys.gameshop.model.OrderDetails;
 import com.gamekeys.gameshop.model.ShoppingCart;
 import com.gamekeys.gameshop.repository.AppUserRepository;
@@ -43,8 +43,8 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
         if(entity.getOrderDetails() != null) {
             result.setOrderDetails(entity.getOrderDetails().stream().map(orderDetails -> orderDetailsToBasicDto(orderDetails)).collect(Collectors.toSet()));
         }
-        if(entity.getInventory() != null) {
-            result.setInventory(inventoryToBasicDto(entity.getInventory()));
+        if(entity.getProducts() != null) {
+            result.setProducts(entity.getProducts().stream().map(product -> productToBasicDto(product)).collect(Collectors.toSet()));
         }
         return result;
     }
@@ -73,8 +73,8 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
         if(dto.getOrderDetails() != null){
             result.setOrderDetails(appUserRepository.getReferenceById(dto.getId()).getOrderDetails());
         }
-        if(dto.getInventory() != null){
-            result.setInventory(appUserRepository.getReferenceById(dto.getId()).getInventory());
+        if(dto.getProducts() != null){
+            result.setProducts(appUserRepository.getReferenceById(dto.getId()).getProducts());
         }
         return result;
     }
@@ -97,11 +97,10 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
         return result;
     }
 
-    private InventoryBasicDto inventoryToBasicDto(Inventory entity) {
-        InventoryBasicDto result = new InventoryBasicDto();
+    private ProductBasicDto productToBasicDto(Product entity) {
+        ProductBasicDto result = new ProductBasicDto();
         result.setId(entity.getId());
-        result.setTotalSold(entity.getTotalSold());
-        result.setListed(entity.getListed());
+        result.setPricePerKey(entity.getPricePerKey());
         return result;
     }
 

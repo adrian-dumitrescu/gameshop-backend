@@ -1,6 +1,6 @@
 package com.gamekeys.gameshop.dto.model;
 
-import com.gamekeys.gameshop.dto.basic.ProductKeyBasicDto;
+import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +18,6 @@ public class ProductDetailsDto {
 
     private String publisher;
 
-    private Set<ProductKeyBasicDto> productKeys;
+    private Set<ProductBasicDto> products;
 
 }

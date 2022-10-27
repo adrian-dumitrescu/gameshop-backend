@@ -2,13 +2,12 @@ package com.gamekeys.gameshop.configuration;
 
 import com.gamekeys.gameshop.model.AppRole;
 import com.gamekeys.gameshop.model.ProductDetails;
-import com.gamekeys.gameshop.model.ShoppingCart;
 import com.gamekeys.gameshop.model.enums.ProductPublisher;
 import com.gamekeys.gameshop.model.enums.ProductTitle;
 import com.gamekeys.gameshop.model.enums.Role;
 import com.gamekeys.gameshop.repository.*;
-import com.gamekeys.gameshop.service.ProductKeyService;
 import com.gamekeys.gameshop.service.AppUserService;
+import com.gamekeys.gameshop.service.ProductKeyService;
 import com.gamekeys.gameshop.service.ProductDetailsService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationEventPublisher;
@@ -57,9 +56,9 @@ public class BeanConfiguration {
 
             productDetailsRepository.saveAll(List.of(overwatch2, diablo4, ds3, dyingLight2, destiny2));
 
-            ShoppingCart ioanaShoppingCart = new ShoppingCart();
-            ioanaShoppingCart.setUser(appUserRepository.getReferenceById(1L));
-            shoppingCartRepository.save(ioanaShoppingCart);
+//            ShoppingCart ioanaShoppingCart = new ShoppingCart();
+//            ioanaShoppingCart.setUser(appUserRepository.getReferenceById(1L));
+//            shoppingCartRepository.save(ioanaShoppingCart);
 
 //            ProductKey productKey = new ProductKey();
 //            productKey.setKeyValue("231412412");

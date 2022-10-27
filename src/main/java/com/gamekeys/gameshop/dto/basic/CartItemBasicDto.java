@@ -17,12 +17,16 @@ public class CartItemBasicDto {
 
     private Integer quantity;
 
+    private String sellerEmail;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime modifiedAt;
 
+    private ProductBasicDto product;
+
     // No reference to ShoppingCartBasicDto shoppingCart;
 
-    // No reference to ProductKeyBasicDto productKey;
+    // No reference to ProductBasicDto product;
 
 }

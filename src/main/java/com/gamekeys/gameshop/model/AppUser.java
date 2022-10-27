@@ -70,6 +70,10 @@ public class AppUser implements Serializable {
 
     private Integer age;
 
+//    private Integer totalSold = 0;
+//
+//    private Integer listed = 0;
+
     @Column(nullable = false)
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     @JoinTable(
@@ -84,10 +88,11 @@ public class AppUser implements Serializable {
     //@PrimaryKeyJoinColumn
     private ShoppingCart shoppingCart;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    //@JoinColumn(name = "user_fk")
-    //@MapsId
-    private Inventory inventory;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    //@JsonIgnore
+    //@JsonManagedReference
+    private Set<Product> products = new HashSet<>();
 
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")

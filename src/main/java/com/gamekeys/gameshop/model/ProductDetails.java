@@ -36,7 +36,9 @@ public class ProductDetails implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "productDetails")
     //@JsonManagedReference
     //@JsonIgnore
-    private Set<ProductKey> productKeys = new HashSet<>();
+    private Set<Product> products = new HashSet<>();
+
+
 
     public ProductDetails(Long id, String title, String publisher) {
         this.id = id;

@@ -17,5 +17,5 @@ public class ProductDetailsBasicDto {
 
     private String publisher;
 
-    // No reference to Set<ProductKey> productKeys
+    // No reference to Set<Product> products;
 }

@@ -1,13 +1,15 @@
 package com.gamekeys.gameshop.mapper;
 
-import com.gamekeys.gameshop.dto.model.InventoryDto;
+import com.gamekeys.gameshop.dto.basic.ProductDetailsBasicDto;
+import com.gamekeys.gameshop.dto.model.ProductDto;
 import com.gamekeys.gameshop.dto.basic.AppUserBasicDto;
 import com.gamekeys.gameshop.dto.basic.ProductKeyBasicDto;
 import com.gamekeys.gameshop.model.AppUser;
-import com.gamekeys.gameshop.model.Inventory;
+import com.gamekeys.gameshop.model.Product;
+import com.gamekeys.gameshop.model.ProductDetails;
 import com.gamekeys.gameshop.model.ProductKey;
 import com.gamekeys.gameshop.repository.AppUserRepository;
-import com.gamekeys.gameshop.repository.InventoryRepository;
+import com.gamekeys.gameshop.repository.ProductRepository;
 import com.gamekeys.gameshop.repository.ProductKeyRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,38 +18,42 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class InventoryMapper implements Mapper<Inventory, InventoryDto> {
+public class ProductMapper implements Mapper<Product, ProductDto> {
 
     private AppUserRepository appUserRepository;
     private ProductKeyRepository productKeyRepository;
-    private InventoryRepository inventoryRepository;
+    private ProductRepository productRepository;
 
     @Override
-    public InventoryDto convertToDto(Inventory entity) {
-        InventoryDto result = new InventoryDto();
+    public ProductDto convertToDto(Product entity) {
+        ProductDto result = new ProductDto();
         result.setId(entity.getId());
-        result.setTotalSold(entity.getTotalSold());
-        result.setListed(entity.getListed());
+        result.setPricePerKey(entity.getPricePerKey());
         if(entity.getUser() != null) {
             result.setUser(appUserToBasicDto(entity.getUser()));
         }
         if(entity.getProductKeys() != null) {
             result.setProductKeys(entity.getProductKeys().stream().map(productKey -> productKeyToBasicDto(productKey)).collect(Collectors.toSet()));
         }
+        if(entity.getProductDetails() != null){
+            result.setProductDetails(productDetailsToBasicDto(entity.getProductDetails()));
+        }
         return result;
     }
 
     @Override
-    public Inventory convertToEntity(InventoryDto dto) {
-        Inventory result = new Inventory();
+    public Product convertToEntity(ProductDto dto) {
+        Product result = new Product();
         result.setId(dto.getId());
-        result.setTotalSold(dto.getTotalSold());
-        result.setListed(dto.getListed());
+        result.setPricePerKey(dto.getPricePerKey());
         if(dto.getUser() != null) {
-            result.setUser(inventoryRepository.getReferenceById(dto.getId()).getUser());
+            result.setUser(productRepository.getReferenceById(dto.getId()).getUser());
         }
         if(dto.getProductKeys() != null){
-            result.setProductKeys(inventoryRepository.getReferenceById(dto.getId()).getProductKeys());
+            result.setProductKeys(productRepository.getReferenceById(dto.getId()).getProductKeys());
+        }
+        if(dto.getProductDetails() != null){
+            result.setProductDetails(productRepository.getReferenceById(dto.getId()).getProductDetails());
         }
         return result;
     }
@@ -71,8 +77,16 @@ public class InventoryMapper implements Mapper<Inventory, InventoryDto> {
         ProductKeyBasicDto productKeyBasicDto = new ProductKeyBasicDto();
         productKeyBasicDto.setId(entity.getId());
         productKeyBasicDto.setActivationKey(entity.getActivationKey());
-        productKeyBasicDto.setPrice(entity.getPrice());
         return productKeyBasicDto;
+    }
+
+
+    private ProductDetailsBasicDto productDetailsToBasicDto(ProductDetails entity) {
+        ProductDetailsBasicDto result = new ProductDetailsBasicDto();
+        result.setId(entity.getId());
+        result.setTitle(entity.getTitle());
+        result.setPublisher(entity.getPublisher());
+        return result;
     }
 
 

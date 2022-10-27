@@ -1,8 +1,8 @@
 package com.gamekeys.gameshop.mapper;
 
+import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
 import com.gamekeys.gameshop.dto.model.ProductDetailsDto;
-import com.gamekeys.gameshop.dto.basic.ProductKeyBasicDto;
-import com.gamekeys.gameshop.model.ProductKey;
+import com.gamekeys.gameshop.model.Product;
 import com.gamekeys.gameshop.model.ProductDetails;
 import com.gamekeys.gameshop.repository.ProductDetailsRepository;
 import lombok.AllArgsConstructor;
@@ -22,8 +22,8 @@ public class ProductDetailsMapper implements Mapper<ProductDetails, ProductDetai
         result.setId(entity.getId());
         result.setTitle(entity.getTitle());
         result.setPublisher(entity.getPublisher());
-        if(entity.getProductKeys() != null) {
-            result.setProductKeys(entity.getProductKeys().stream().map(activationKey -> productKeyToBasicDto(activationKey)).collect(Collectors.toSet()));
+        if(entity.getProducts() != null) {
+            result.setProducts(entity.getProducts().stream().map(activationKey -> productToBasicDto(activationKey)).collect(Collectors.toSet()));
         }
         return result;
     }
@@ -34,19 +34,17 @@ public class ProductDetailsMapper implements Mapper<ProductDetails, ProductDetai
         result.setId(dto.getId());
         result.setTitle(dto.getTitle());
         result.setPublisher(dto.getPublisher());
-        if(dto.getProductKeys() != null) {
-            result.setProductKeys(productDetailsRepository.getReferenceById(dto.getId()).getProductKeys());
+        if(dto.getProducts() != null) {
+            result.setProducts(productDetailsRepository.getReferenceById(dto.getId()).getProducts());
         }
         return result;
     }
 
-
-    private ProductKeyBasicDto productKeyToBasicDto(ProductKey entity) {
-        ProductKeyBasicDto productKeyBasicDto = new ProductKeyBasicDto();
-        productKeyBasicDto.setId(entity.getId());
-        productKeyBasicDto.setActivationKey(entity.getActivationKey());
-        productKeyBasicDto.setPrice(entity.getPrice());
-        return productKeyBasicDto;
+    private ProductBasicDto productToBasicDto(Product entity) {
+        ProductBasicDto result = new ProductBasicDto();
+        result.setId(entity.getId());
+        result.setPricePerKey(entity.getPricePerKey());
+        return result;
     }
 
 

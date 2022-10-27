@@ -1,6 +1,6 @@
 package com.gamekeys.gameshop.dto.model;
 
-import com.gamekeys.gameshop.dto.basic.InventoryBasicDto;
+import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
 import com.gamekeys.gameshop.dto.basic.OrderDetailsBasicDto;
 import com.gamekeys.gameshop.dto.basic.ShoppingCartBasicDto;
 import com.gamekeys.gameshop.model.AppRole;
@@ -55,7 +55,7 @@ public class AppUserDto {
 
     private Set<OrderDetailsBasicDto> orderDetails;
 
-    private InventoryBasicDto inventory;
+    private Set<ProductBasicDto> products;
 
 }
 

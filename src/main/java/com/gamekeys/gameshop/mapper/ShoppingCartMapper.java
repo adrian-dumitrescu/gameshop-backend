@@ -2,9 +2,11 @@ package com.gamekeys.gameshop.mapper;
 
 import com.gamekeys.gameshop.dto.basic.AppUserBasicDto;
 import com.gamekeys.gameshop.dto.basic.CartItemBasicDto;
+import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
 import com.gamekeys.gameshop.dto.model.ShoppingCartDto;
 import com.gamekeys.gameshop.model.AppUser;
 import com.gamekeys.gameshop.model.CartItem;
+import com.gamekeys.gameshop.model.Product;
 import com.gamekeys.gameshop.model.ShoppingCart;
 import com.gamekeys.gameshop.repository.ShoppingCartRepository;
 import lombok.AllArgsConstructor;
@@ -66,13 +68,21 @@ public class ShoppingCartMapper implements Mapper<ShoppingCart, ShoppingCartDto>
     }
 
     private CartItemBasicDto cartItemToBasicDto(CartItem entity) {
-        CartItemBasicDto cartItemDto = new CartItemBasicDto();
-        cartItemDto.setId(entity.getId());
-        cartItemDto.setQuantity(entity.getQuantity());
-        cartItemDto.setCreatedAt(entity.getCreatedAt());
-        cartItemDto.setModifiedAt(entity.getModifiedAt());
-        return cartItemDto;
+        CartItemBasicDto cartItemBasicDto = new CartItemBasicDto();
+        cartItemBasicDto.setId(entity.getId());
+        cartItemBasicDto.setQuantity(entity.getQuantity());
+        cartItemBasicDto.setSellerEmail(entity.getSellerEmail());
+        cartItemBasicDto.setCreatedAt(entity.getCreatedAt());
+        cartItemBasicDto.setModifiedAt(entity.getModifiedAt());
+        cartItemBasicDto.setProduct(productToBasicDto(entity.getProduct())); // demo
+        return cartItemBasicDto;
     }
 
+    private ProductBasicDto productToBasicDto(Product entity) {
+        ProductBasicDto productBasicDto = new ProductBasicDto();
+        productBasicDto.setId(entity.getId());
+        productBasicDto.setPricePerKey(entity.getPricePerKey());
+        return productBasicDto;
+    }
 
 }

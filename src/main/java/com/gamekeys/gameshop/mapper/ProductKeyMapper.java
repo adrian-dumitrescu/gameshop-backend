@@ -1,10 +1,8 @@
 package com.gamekeys.gameshop.mapper;
 
+import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
 import com.gamekeys.gameshop.dto.model.ProductKeyDto;
-import com.gamekeys.gameshop.dto.basic.InventoryBasicDto;
-import com.gamekeys.gameshop.dto.basic.ProductDetailsBasicDto;
-import com.gamekeys.gameshop.model.Inventory;
-import com.gamekeys.gameshop.model.ProductDetails;
+import com.gamekeys.gameshop.model.Product;
 import com.gamekeys.gameshop.model.ProductKey;
 import com.gamekeys.gameshop.repository.ProductKeyRepository;
 import lombok.AllArgsConstructor;
@@ -22,12 +20,8 @@ public class ProductKeyMapper implements Mapper<ProductKey, ProductKeyDto> {
         ProductKeyDto result = new ProductKeyDto();
         result.setId(entity.getId());
         result.setActivationKey(entity.getActivationKey());
-        result.setPrice(entity.getPrice());
-        if(entity.getInventory() != null) {
-            result.setInventory(inventoryToBasicDto(entity.getInventory()));
-        }
-        if(entity.getProductDetails() != null) {
-            result.setProductDetails(productDetailsToBasicDto(entity.getProductDetails()));
+        if(entity.getProduct() != null) {
+            result.setProduct(productToBasicDto(entity.getProduct()));
         }
         return result;
     }
@@ -37,33 +31,18 @@ public class ProductKeyMapper implements Mapper<ProductKey, ProductKeyDto> {
         ProductKey result = new ProductKey();
         result.setId(dto.getId());
         result.setActivationKey(dto.getActivationKey());
-        result.setPrice(dto.getPrice());
-        if (dto.getInventory() != null) {
-            result.setInventory(productKeyRepository.getReferenceById(dto.getId()).getInventory());
-        }
-        if (dto.getProductDetails() != null) {
-            result.setProductDetails(productKeyRepository.getReferenceById(dto.getId()).getProductDetails());
+        if (dto.getProduct() != null) {
+            result.setProduct(productKeyRepository.getReferenceById(dto.getId()).getProduct());
         }
         return result;
     }
 
-    private ProductDetailsBasicDto productDetailsToBasicDto(ProductDetails entity) {
-        ProductDetailsBasicDto result = new ProductDetailsBasicDto();
-        result.setId(entity.getId());
-        result.setTitle(entity.getTitle());
-        result.setPublisher(entity.getPublisher());
-        return result;
+    private ProductBasicDto productToBasicDto(Product entity) {
+        ProductBasicDto productBasicDto = new ProductBasicDto();
+        productBasicDto.setId(entity.getId());
+        productBasicDto.setPricePerKey(entity.getPricePerKey());
+        return productBasicDto;
     }
-
-    private InventoryBasicDto inventoryToBasicDto(Inventory entity) {
-        InventoryBasicDto result = new InventoryBasicDto();
-        result.setId(entity.getId());
-        result.setTotalSold(entity.getTotalSold());
-        result.setListed(entity.getListed());
-        return result;
-    }
-
-
 
 }
 

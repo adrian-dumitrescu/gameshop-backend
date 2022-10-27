@@ -52,7 +52,7 @@ public class AppUserBasicDto {
 
     // No reference to OrderDetails orderDetails
 
-    // No reference to Inventory inventory;
+    // No reference to Set<Product> products;
 
 
 }

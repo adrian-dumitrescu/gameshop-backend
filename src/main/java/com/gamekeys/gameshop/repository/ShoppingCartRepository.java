@@ -11,6 +11,8 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long> {
 
-    Optional<ShoppingCart> findByUserEmail(String userEmail);
+    //Optional<ShoppingCart> findByUserEmail(String userEmail);
+    Optional<ShoppingCart> findShoppingCartByUserEmail(String userEmail);
+
 
 }

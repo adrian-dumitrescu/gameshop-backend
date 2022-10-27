@@ -7,7 +7,6 @@ import com.gamekeys.gameshop.mapper.ProductKeyMapper;
 import com.gamekeys.gameshop.model.AppRole;
 import com.gamekeys.gameshop.model.AppUser;
 import com.gamekeys.gameshop.model.AppUserDetails;
-import com.gamekeys.gameshop.model.Inventory;
 import com.gamekeys.gameshop.model.enums.Role;
 import com.gamekeys.gameshop.repository.*;
 import lombok.AllArgsConstructor;
@@ -52,7 +51,7 @@ public class AppUserService implements UserDetailsService {
     private final AppRoleRepository appRoleRepository;
     private final ProductDetailsRepository productDetailsRepository;
     private final ProductKeyRepository productKeyRepository;
-    private final InventoryRepository inventoryRepository;
+    private final ProductRepository productRepository;
 
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -135,7 +134,6 @@ public class AppUserService implements UserDetailsService {
     public AppUserDto createNewUser(String firstName, String lastName, String email, String password, Role role, boolean isNotLocked, boolean isEnabled) throws UserNotFoundException, EmailExistException, IOException {
         validateNewUserEmail(EMPTY, email);
         AppUser appUser = new AppUser();
-        Inventory newUserInventory = new Inventory();
         AppRole userRole = appRoleRepository.findByRole(role);
         //userRole.setRole(role);
 
@@ -152,8 +150,6 @@ public class AppUserService implements UserDetailsService {
         //appUser.setShoppingSession(shoppingSession);
         appUserRepository.save(appUser);
 
-        newUserInventory.setUser(appUser);
-        inventoryRepository.save(newUserInventory);
         //saveProfileImage(appUser, profileImage);
 
         return appUserMapper.convertToDto(appUser);
