@@ -23,8 +23,10 @@ public class ProductDto {
 
     private ProductDetailsBasicDto productDetails;
 
-    private CartItemBasicDto cartItem;
+    private Set<CartItemBasicDto> cartItems;
+    //private CartItemBasicDto cartItem;
 
-    private OrderItemBasicDto orderItem;
+    private Set<OrderItemBasicDto> orderItems;
+    //private OrderItemBasicDto orderItem;
 
 }

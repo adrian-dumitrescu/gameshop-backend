@@ -4,9 +4,12 @@ import com.gamekeys.gameshop.dto.model.ProductKeyDto;
 import com.gamekeys.gameshop.service.ProductKeyService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @RestController
@@ -18,28 +21,29 @@ public class ProductKeyController {
 
     private final ProductKeyService productKeyService;
 
-//    @GetMapping("/all/{productTitle}")
-//    public ResponseEntity<List<ProductKeyDto>> getAllKeysForUser(@PathVariable("productTitle") String productTitle) {
-//        List<ProductKeyDto> activationKeys = productKeyService.findAllProductKeysByTitle(productTitle);
-//        return new ResponseEntity<>(activationKeys, OK);
-//    }
+    @GetMapping("/all")
+    public ResponseEntity<List<ProductKeyDto>> getAllKeysForUser(@RequestParam("userEmail")String userEmail,
+                                                                 @RequestParam("productTitle") String productTitle) {
+        List<ProductKeyDto> activationKeys = productKeyService.findAllProductKeysByTitle(userEmail, productTitle);
+        return new ResponseEntity<>(activationKeys, OK);
+    }
 
     @GetMapping("/find/{id}")
     public ResponseEntity<ProductKeyDto> getProductKeyById(@PathVariable("id") Long id) {
         ProductKeyDto productKey = productKeyService.findProductKeyById(id);
-        return new ResponseEntity<>(productKey, HttpStatus.OK);
+        return new ResponseEntity<>(productKey, OK);
     }
 
     @DeleteMapping("/delete/id/{id}")
     public ResponseEntity<?> deleteProductKeyById(@PathVariable("id") Long id) {
         productKeyService.deleteProductKeyById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(OK);
     }
 
     @DeleteMapping("/delete/key/{activationKey}")
     public ResponseEntity<?> deleteProductKeyByActivationKey(@PathVariable("activationKey") String activationKey) {
         productKeyService.deleteProductKeyByActivationKey(activationKey);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(OK);
     }
 
 

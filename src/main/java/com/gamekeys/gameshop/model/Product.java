@@ -26,30 +26,42 @@ public class Product implements Serializable {
     @Column(nullable = false)
     private BigDecimal pricePerKey;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_fk", nullable = false)
     //@JsonBackReference
     private AppUser user;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "product", orphanRemoval = true)
     //@JsonIgnore
     //@JsonManagedReference
     private Set<ProductKey> productKeys = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_details_fk", nullable = false)
     //@JsonBackReference
     private ProductDetails productDetails;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
-    //@JoinColumn(name = "user_fk")
-    //@MapsId
-    private CartItem cartItem;
+//    @OneToOne(mappedBy = "product")
+//    //@JoinColumn(name = "user_fk")
+//    //@MapsId
+//    private CartItem cartItem;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
-    //@JoinColumn(name = "user_fk")
-    //@MapsId
-    private OrderItem orderItem;
+//    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+//    //@JoinColumn(name = "user_fk")
+//    //@MapsId
+//    private OrderItem orderItem;
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "product", orphanRemoval = true)
+    //@JsonIgnore
+    //@JsonManagedReference
+    private Set<CartItem> cartItems = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "product", orphanRemoval = true)
+    //@JsonIgnore
+    //@JsonManagedReference
+    private Set<OrderItem> orderItems = new HashSet<>();
+
+
 
 }
 

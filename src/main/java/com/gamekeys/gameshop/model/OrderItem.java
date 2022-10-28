@@ -29,13 +29,19 @@ public class OrderItem implements Serializable {
 
     private LocalDateTime modifiedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "order_details_fk", nullable = false)
     //@JsonBackReference
     private OrderDetails orderDetails;
 
-    @OneToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "product_fk", referencedColumnName = "product_id")
-    //@PrimaryKeyJoinColumn
+//    @OneToOne
+//    @JoinColumn(name = "product_fk", referencedColumnName = "product_id")
+//    //@PrimaryKeyJoinColumn
+//    private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_fk", nullable = false)
+    //@JsonBackReference
     private Product product;
+
 }

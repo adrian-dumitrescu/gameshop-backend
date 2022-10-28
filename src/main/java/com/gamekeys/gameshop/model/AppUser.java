@@ -83,22 +83,24 @@ public class AppUser implements Serializable {
     )
     private Set<AppRole> roles = new HashSet<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "shopping_cart_fk", referencedColumnName = "shopping_cart_id")
     //@PrimaryKeyJoinColumn
     private ShoppingCart shoppingCart;
 
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-    //@JsonIgnore
-    //@JsonManagedReference
-    private Set<Product> products = new HashSet<>();
-
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "user")
     //@JsonIgnore
     //@JsonManagedReference
     private Set<OrderDetails> orderDetails = new HashSet<>();
+
+//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+//    private ShoppingCart shoppingCart;
+
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "user")
+    //@JsonIgnore
+    //@JsonManagedReference
+    private Set<Product> products = new HashSet<>();
 
 
 

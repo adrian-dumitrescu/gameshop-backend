@@ -30,11 +30,15 @@ public class ShoppingCart implements Serializable {
 
     private LocalDateTime modifiedAt;
 
-    @OneToOne(mappedBy = "shoppingCart", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "shoppingCart", fetch = FetchType.LAZY, optional = false)
     //@JoinColumn(name = "user_fk")
     //@MapsId
     private AppUser user;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "shoppingCart")
+//    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
+//    @JoinColumn(name = "user_fk")
+//    private AppUser user;
+
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<CartItem> cartItems = new HashSet<>();
 }

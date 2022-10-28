@@ -43,26 +43,24 @@ public class ShoppingCartService {
 
     @Transactional
     public ShoppingCartDto addItemToShoppingCart(String clientEmail, String sellerEmail, String productTitle) {
-//        @RequestParam("clientEmail") String clientEmail,
-//        @RequestParam("vendorEmail") String vendorEmail,
-//        @RequestParam("productTitle") String productTitle
+
         AppUser clientUser = appUserRepository.findAppUserByEmail(clientEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + clientEmail + " was found")));
         Product product = productRepository.findProductByUserEmailAndProductDetailsTitle(sellerEmail, productTitle).orElseThrow(() -> new EntityNotFoundException(String.format("No product with user email " + clientEmail + " and product title " + productTitle + " was found")));
 
         ShoppingCart userShoppingCart = getUserShoppingCart(clientEmail, clientUser);
 
         Set<CartItem> cartItems;
-        if(userShoppingCart.getCartItems() != null){
+        if (userShoppingCart.getCartItems() != null) {
             cartItems = userShoppingCart.getCartItems();
-        }else {
+        } else {
             cartItems = new HashSet<>();
         }
 
-        CartItem userCartItem = updateCartItem(userShoppingCart, product, sellerEmail, productTitle);
-        cartItems.add(userCartItem);
+        CartItem userCartItem = addItemToShoppingCart(userShoppingCart, product, sellerEmail, clientEmail);
+        //cartItems.add(userCartItem);
 
 
-        userShoppingCart.setCartItems(cartItems);
+        //userShoppingCart.setCartItems(cartItems);
         userShoppingCart.setTotal(product.getPricePerKey().multiply(new BigDecimal(userCartItem.getQuantity())));
         userShoppingCart.setModifiedAt(LocalDateTime.now());
         shoppingCartRepository.save(userShoppingCart);
@@ -94,15 +92,15 @@ public class ShoppingCartService {
 ////        }).collect(Collectors.toSet());
 //    }
 
-    private CartItem updateCartItem(ShoppingCart userShoppingCart, Product product, String sellerEmail, String productTitle){
-        Optional<CartItem> optionalCartItem = cartItemRepository.findCartItemByProductUserEmailAndProductProductDetailsTitle(sellerEmail,productTitle);
-        if(optionalCartItem.isPresent()){
+    private CartItem addItemToShoppingCart(ShoppingCart userShoppingCart, Product product, String sellerEmail, String clientEmail) {
+        Optional<CartItem> optionalCartItem = cartItemRepository.findCartItemByShoppingCartUserEmailAndProduct(clientEmail, product);
+        if (optionalCartItem.isPresent()) {
             CartItem cartItem = optionalCartItem.get();
             cartItem.setQuantity(cartItem.getQuantity() + 1);
             cartItem.setModifiedAt(LocalDateTime.now());
             cartItemRepository.save(cartItem);
             return cartItem;
-        }else {
+        } else {
             CartItem newCartItem = new CartItem();
             newCartItem.setProduct(product);
             newCartItem.setQuantity(newCartItem.getQuantity() + 1);
@@ -114,10 +112,11 @@ public class ShoppingCartService {
             return newCartItem;
         }
     }
-    private ShoppingCart getUserShoppingCart(String clientEmail, AppUser clientUser){
+
+    private ShoppingCart getUserShoppingCart(String clientEmail, AppUser clientUser) {
         Optional<ShoppingCart> shoppingCart = shoppingCartRepository.findShoppingCartByUserEmail(clientEmail);
 
-        if(shoppingCart.isPresent()){
+        if (shoppingCart.isPresent()) {
             return shoppingCart.get();
         }
         ShoppingCart newShoppingCart = new ShoppingCart();
@@ -131,22 +130,24 @@ public class ShoppingCartService {
         return newShoppingCart;
     }
 
-
-    public ShoppingCartDto deleteItemFromShoppingCart(String activationKey, String userEmail) {
+    //@Transactional
+    public void deleteShoppingCart(String userEmail) {
         AppUser appUser = appUserRepository.findAppUserByEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + userEmail + " was found")));
-
         ShoppingCart shoppingCart = appUser.getShoppingCart();
+        appUser.setShoppingCart(null);
+        shoppingCartRepository.delete(shoppingCart);
+        //ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartByUserEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No Shopping Cart with email " + userEmail + " was found")));
+        //shoppingCartRepository.delete(shoppingCart);
 
-//        productKeyRepository.deleteProductKeyByActivationKey(activationKey);
-//        // delete Cart Item By activation Key??!??!?!
-//
-//        userProduct.setListed(userProduct.getListed()-1);
-//        productRepository.save(userProduct);
-
-        return shoppingCartMapper.convertToDto(shoppingCart);
+        //shoppingCartRepository.deleteShoppingCartByUserEmail(userEmail);
     }
 
-    public ShoppingCartDto deleteShoppingCart(String activationKey, String userEmail) {
-        return null;
+    //@Transactional
+    public void deleteItemFromShoppingCart(String userEmail, String productTitle) {
+        CartItem cartItem = cartItemRepository.findCartItemByShoppingCartUserEmailAndProductProductDetailsTitle(userEmail, productTitle).orElseThrow(() -> new EntityNotFoundException(String.format("No cart item with email " + userEmail + " and product title " + productTitle + " was found")));
+        ShoppingCart shoppingCart = cartItem.getShoppingCart();
+        shoppingCart.setTotal(shoppingCart.getTotal().subtract(cartItem.getProduct().getPricePerKey().multiply(new BigDecimal(cartItem.getQuantity()))));
+        cartItemRepository.delete(cartItem);
+
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 @Transactional(readOnly = true)
@@ -18,6 +19,8 @@ public interface ProductKeyRepository extends JpaRepository<ProductKey, Long> {
 //    void deleteAllInBatchByActivationKey(String activationKey);
 
     Optional<ProductKey> findProductKeyByActivationKey(String activationKey);
+
+    Optional<Set<ProductKey>> findAllByProductUserEmailAndProductProductDetailsTitle(String userEmail, String productTitle);
 
     void deleteProductKeyByActivationKey(String activationKey);
 

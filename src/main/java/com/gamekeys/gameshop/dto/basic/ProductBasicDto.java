@@ -23,8 +23,8 @@ public class ProductBasicDto {
 
     // No reference to ProductDetails productDetails;
 
-    // No reference to CartItem cartItem;
+    // No reference to Set<CartItem> cartItem;
 
-    // No reference to OrderItem orderItem;
+    // No reference to Set<OrderItem> orderItem;
 
 }

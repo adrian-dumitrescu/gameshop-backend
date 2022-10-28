@@ -33,7 +33,7 @@ public class ProductDetails implements Serializable {
     //@Enumerated(EnumType.STRING)
     private String publisher;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "productDetails")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "productDetails")
     //@JsonManagedReference
     //@JsonIgnore
     private Set<Product> products = new HashSet<>();

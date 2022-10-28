@@ -20,4 +20,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     //Optional<Product> findInventoryByUserEmailAndProductTitle(String userEmail, String productTitle);
 
     Optional<Product> findProductByUserEmailAndProductDetailsTitle(String userEmail, String productTitle);
+
 }

@@ -30,12 +30,12 @@ public class OrderDetails implements Serializable {
 
     private LocalDateTime modifiedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_fk", nullable = false)
     //@JsonBackReference
     private AppUser user;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "orderDetails")
+    @OneToMany(mappedBy = "orderDetails", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     //@JsonIgnore
     //@JsonManagedReference
     private Set<OrderItem> orderItems = new HashSet<>();

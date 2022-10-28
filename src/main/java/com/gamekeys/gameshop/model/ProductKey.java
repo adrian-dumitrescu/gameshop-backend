@@ -26,7 +26,7 @@ public class ProductKey implements Serializable {
     @Column(nullable = false, unique = true)
     private String activationKey;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_fk", nullable = false)
     //@JsonBackReference
     private Product product;

@@ -30,19 +30,26 @@ public class ProductController {
 
     @PostMapping("/add/key")
     public ResponseEntity<ProductDto> addKeyToUserProducts(@RequestParam("activationKey") String activationKey,
-                                                            @RequestParam("userEmail") String userEmail,
-                                                            @RequestParam("productTitle") String productTitle,
-                                                            @RequestParam("productKeyPrice") BigDecimal productKeyPrice) {
+                                                           @RequestParam("userEmail") String userEmail,
+                                                           @RequestParam("productTitle") String productTitle,
+                                                           @RequestParam("productKeyPrice") BigDecimal productKeyPrice) {
         ProductDto userProduct = productService.addKeyToUserProduct(activationKey, productKeyPrice, userEmail, productTitle);
         return new ResponseEntity<>(userProduct, CREATED);
     }
 
     @DeleteMapping("/delete/key")
     public ResponseEntity<ProductDto> deleteKeyFromProduct(@RequestParam("activationKey") String activationKey,
-                                                             @RequestParam("userEmail") String userEmail,
-                                                             @RequestParam("productTitle") String productTitle) {
+                                                           @RequestParam("userEmail") String userEmail,
+                                                           @RequestParam("productTitle") String productTitle) {
         ProductDto userProduct = productService.deleteKeyFromProduct(activationKey, userEmail, productTitle);
         return new ResponseEntity<>(userProduct, OK);
+    }
+
+    @DeleteMapping("/delete/product-inventory")
+    public ResponseEntity<?> deleteProduct(@RequestParam("userEmail") String userEmail,
+                                                    @RequestParam("productTitle") String productTitle) {
+        productService.deleteProductFromUser(userEmail, productTitle);
+        return new ResponseEntity<>(OK);
     }
 
 }

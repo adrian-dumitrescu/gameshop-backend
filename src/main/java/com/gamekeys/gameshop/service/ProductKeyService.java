@@ -11,6 +11,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -27,10 +31,10 @@ public class ProductKeyService {
         return productKeyMapper.convertToDto(productKey);
     }
 
-//    public List<ProductKeyDto> findAllProductKeysByTitle(String productTitle) {
-//        Set<ProductKey> productKeys = productKeyRepository.findAllByProductDetailsTitle(productTitle).orElseThrow(() -> new EntityNotFoundException(String.format("There are no keys for title: " + productTitle)));//return productKeyRepository.findAllByInventory_UserEmail(userEmail).stream().map(c -> productKeyMapper.convertToDto(c)).collect(Collectors.toList());
-//        return productKeys.stream().map(productKey -> productKeyMapper.convertToDto(productKey)).collect(Collectors.toList());
-//    }
+    public List<ProductKeyDto> findAllProductKeysByTitle(String userEmail, String productTitle) {
+        Set<ProductKey> productKeys = productKeyRepository.findAllByProductUserEmailAndProductProductDetailsTitle(userEmail, productTitle).orElseThrow(() -> new EntityNotFoundException(String.format("There are no keys for email: " + userEmail + " and title: " + productTitle)));//return productKeyRepository.findAllByInventory_UserEmail(userEmail).stream().map(c -> productKeyMapper.convertToDto(c)).collect(Collectors.toList());
+        return productKeys.stream().map(productKey -> productKeyMapper.convertToDto(productKey)).collect(Collectors.toList());
+    }
 
     public void deleteProductKeyById(Long id) {
         productKeyRepository.deleteById(id);

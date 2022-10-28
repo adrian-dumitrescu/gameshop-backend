@@ -7,8 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestController
@@ -35,17 +34,16 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping("/delete/cart")
-    public ResponseEntity<ShoppingCartDto> removeShoppingCart(@RequestParam("activationKey") String activationKey,
-                                                              @RequestParam("userEmail") String userEmail) {
-        ShoppingCartDto shoppingCart = shoppingCartService.deleteShoppingCart(activationKey, userEmail);
-        return new ResponseEntity<>(shoppingCart, OK);
+    public ResponseEntity<?> deleteShoppingCart(@RequestParam("userEmail") String userEmail) {
+        shoppingCartService.deleteShoppingCart(userEmail);
+        return new ResponseEntity<>(NO_CONTENT);
     }
 
     @DeleteMapping("/delete/item")
-    public ResponseEntity<ShoppingCartDto> removeItemFromShoppingCart(@RequestParam("activationKey") String activationKey,
-                                                                      @RequestParam("userEmail") String userEmail) {
-        ShoppingCartDto shoppingCart = shoppingCartService.deleteItemFromShoppingCart(activationKey, userEmail);
-        return new ResponseEntity<>(shoppingCart, OK);
+    public ResponseEntity<?> deleteItemFromShoppingCart(@RequestParam("userEmail") String userEmail,
+                                                        @RequestParam("productTitle") String productTitle) {
+        shoppingCartService.deleteItemFromShoppingCart(userEmail, productTitle);
+        return new ResponseEntity<>(NO_CONTENT);
     }
 
 }

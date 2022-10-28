@@ -89,4 +89,9 @@ public class ProductService {
 
         return productMapper.convertToDto(userProduct);
     }
+
+    public void deleteProductFromUser(String userEmail, String productTitle) {
+        Product product = productRepository.findProductByUserEmailAndProductDetailsTitle(userEmail,productTitle).orElseThrow(() -> new EntityNotFoundException(String.format("No inventory with user email " + userEmail + " and product title " + productTitle + " was found")));
+        productRepository.delete(product);
+    }
 }
