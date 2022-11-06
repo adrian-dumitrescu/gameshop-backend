@@ -18,6 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id", nullable = false, updatable = false)
@@ -51,17 +52,15 @@ public class Product implements Serializable {
 //    //@MapsId
 //    private OrderItem orderItem;
 
-    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "product", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product", orphanRemoval = true)
     //@JsonIgnore
     //@JsonManagedReference
     private Set<CartItem> cartItems = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "product", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product", orphanRemoval = true)
     //@JsonIgnore
     //@JsonManagedReference
     private Set<OrderItem> orderItems = new HashSet<>();
-
-
 
 }
 

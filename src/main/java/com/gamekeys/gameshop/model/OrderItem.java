@@ -23,8 +23,6 @@ public class OrderItem implements Serializable {
 
     private Integer quantity = 0;
 
-    private String sellerEmail;
-
     private LocalDateTime createdAt;
 
     private LocalDateTime modifiedAt;

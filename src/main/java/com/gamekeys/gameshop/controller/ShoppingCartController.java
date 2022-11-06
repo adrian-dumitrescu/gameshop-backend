@@ -26,11 +26,17 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/add/item")
-    public ResponseEntity<ShoppingCartDto> addItemToShoppingCart(@RequestParam("userEmail") String userEmail,
+    public ResponseEntity<ShoppingCartDto> addItemToShoppingCart(@RequestParam("clientEmail") String clientEmail,
                                                                  @RequestParam("sellerEmail") String sellerEmail,
                                                                  @RequestParam("productTitle") String productTitle) {
-        ShoppingCartDto shoppingCart = shoppingCartService.addItemToShoppingCart(userEmail, sellerEmail, productTitle);
+        ShoppingCartDto shoppingCart = shoppingCartService.addItemToShoppingCart(clientEmail, sellerEmail, productTitle);
         return new ResponseEntity<>(shoppingCart, CREATED);
+    }
+
+    @PutMapping("/refresh")
+    public ResponseEntity<ShoppingCartDto> refreshShoppingCart(@RequestParam("userEmail") String userEmail) {
+        ShoppingCartDto shoppingCart = shoppingCartService.refreshShoppingCart(userEmail);
+        return new ResponseEntity<>(shoppingCart, OK);
     }
 
     @DeleteMapping("/delete/cart")

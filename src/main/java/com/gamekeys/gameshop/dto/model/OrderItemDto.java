@@ -17,8 +17,6 @@ public class OrderItemDto {
 
     private Integer quantity;
 
-    private String sellerEmail;
-
     private LocalDateTime createdAt;
 
     private LocalDateTime modifiedAt;

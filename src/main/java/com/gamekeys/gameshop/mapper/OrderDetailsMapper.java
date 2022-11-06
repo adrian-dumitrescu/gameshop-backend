@@ -1,14 +1,14 @@
 package com.gamekeys.gameshop.mapper;
 
 import com.gamekeys.gameshop.dto.basic.AppUserBasicDto;
-import com.gamekeys.gameshop.dto.basic.CartItemBasicDto;
+import com.gamekeys.gameshop.dto.basic.OrderItemBasicDto;
 import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
-import com.gamekeys.gameshop.dto.model.ShoppingCartDto;
+import com.gamekeys.gameshop.dto.model.OrderDetailsDto;
 import com.gamekeys.gameshop.model.AppUser;
-import com.gamekeys.gameshop.model.CartItem;
+import com.gamekeys.gameshop.model.OrderDetails;
+import com.gamekeys.gameshop.model.OrderItem;
 import com.gamekeys.gameshop.model.Product;
-import com.gamekeys.gameshop.model.ShoppingCart;
-import com.gamekeys.gameshop.repository.ShoppingCartRepository;
+import com.gamekeys.gameshop.repository.OrderDetailsRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class ShoppingCartMapper implements Mapper<ShoppingCart, ShoppingCartDto> {
+public class OrderDetailsMapper implements Mapper<OrderDetails, OrderDetailsDto> {
 
-    private final ShoppingCartRepository shoppingCartRepository;
+    private final OrderDetailsRepository orderDetailsRepository;
 
     @Override
-    public ShoppingCartDto convertToDto(ShoppingCart entity) {
-        ShoppingCartDto result = new ShoppingCartDto();
+    public OrderDetailsDto convertToDto(OrderDetails entity) {
+        OrderDetailsDto result = new OrderDetailsDto();
         result.setId(entity.getId());
         result.setTotal(entity.getTotal());
         result.setCreatedAt(entity.getCreatedAt());
@@ -30,24 +30,24 @@ public class ShoppingCartMapper implements Mapper<ShoppingCart, ShoppingCartDto>
         if(entity.getUser() != null) {
             result.setUser(appUserToBasicDto(entity.getUser()));
         }
-        if(entity.getCartItems() != null){
-            result.setCartItems(entity.getCartItems().stream().map(cartItem -> cartItemToBasicDto(cartItem)).collect(Collectors.toSet()));
+        if(entity.getOrderItems() != null){
+            result.setOrderItems(entity.getOrderItems().stream().map(orderItem -> orderItemToBasicDto(orderItem)).collect(Collectors.toSet()));
         }
         return result;
     }
 
     @Override
-    public ShoppingCart convertToEntity(ShoppingCartDto dto) {
-        ShoppingCart result = new ShoppingCart();
+    public OrderDetails convertToEntity(OrderDetailsDto dto) {
+        OrderDetails result = new OrderDetails();
         result.setId(dto.getId());
         result.setTotal(dto.getTotal());
         result.setCreatedAt(dto.getCreatedAt());
         result.setModifiedAt(dto.getModifiedAt());
         if(dto.getUser() != null) {
-            result.setUser(shoppingCartRepository.getReferenceById(dto.getId()).getUser());
+            result.setUser(orderDetailsRepository.getReferenceById(dto.getId()).getUser());
         }
-        if(dto.getCartItems() != null){
-            result.setCartItems(shoppingCartRepository.getReferenceById(dto.getId()).getCartItems());
+        if(dto.getOrderItems() != null){
+            result.setOrderItems(orderDetailsRepository.getReferenceById(dto.getId()).getOrderItems());
         }
         return result;
     }
@@ -67,14 +67,14 @@ public class ShoppingCartMapper implements Mapper<ShoppingCart, ShoppingCartDto>
         return appUserBasicDto;
     }
 
-    private CartItemBasicDto cartItemToBasicDto(CartItem entity) {
-        CartItemBasicDto cartItemBasicDto = new CartItemBasicDto();
-        cartItemBasicDto.setId(entity.getId());
-        cartItemBasicDto.setQuantity(entity.getQuantity());
-        cartItemBasicDto.setCreatedAt(entity.getCreatedAt());
-        cartItemBasicDto.setModifiedAt(entity.getModifiedAt());
-        cartItemBasicDto.setProduct(productToBasicDto(entity.getProduct())); // demo
-        return cartItemBasicDto;
+    private OrderItemBasicDto orderItemToBasicDto(OrderItem entity) {
+        OrderItemBasicDto orderItemBasicDto = new OrderItemBasicDto();
+        orderItemBasicDto.setId(entity.getId());
+        orderItemBasicDto.setQuantity(entity.getQuantity());
+        orderItemBasicDto.setCreatedAt(entity.getCreatedAt());
+        orderItemBasicDto.setModifiedAt(entity.getModifiedAt());
+        orderItemBasicDto.setProduct(productToBasicDto(entity.getProduct())); // demo
+        return orderItemBasicDto;
     }
 
     private ProductBasicDto productToBasicDto(Product entity) {
@@ -85,3 +85,4 @@ public class ShoppingCartMapper implements Mapper<ShoppingCart, ShoppingCartDto>
     }
 
 }
+

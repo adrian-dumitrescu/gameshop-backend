@@ -20,7 +20,7 @@ public class ProductDetailsService {
 
     private final ProductDetailsMapper productDetailsMapper;
 
-    public List<ProductDetailsDto> getAllProducts(){
+    public List<ProductDetailsDto> getAllProductDetails(){
         return productDetailsRepository.findAll().stream().map(c -> productDetailsMapper.convertToDto(c)).collect(Collectors.toList());
     }
 

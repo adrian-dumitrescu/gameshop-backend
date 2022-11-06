@@ -49,21 +49,34 @@ public class ShoppingCartService {
 
         ShoppingCart userShoppingCart = getUserShoppingCart(clientEmail, clientUser);
 
+        CartItem userCartItem = addItemToShoppingCart(userShoppingCart, product, sellerEmail, clientEmail);
+
         Set<CartItem> cartItems;
         if (userShoppingCart.getCartItems() != null) {
             cartItems = userShoppingCart.getCartItems();
         } else {
             cartItems = new HashSet<>();
         }
-
-        CartItem userCartItem = addItemToShoppingCart(userShoppingCart, product, sellerEmail, clientEmail);
+        cartItems.add(userCartItem);
+        userShoppingCart.setCartItems(cartItems);
+        shoppingCartRepository.save(userShoppingCart);
         //cartItems.add(userCartItem);
 
 
         //userShoppingCart.setCartItems(cartItems);
-        userShoppingCart.setTotal(product.getPricePerKey().multiply(new BigDecimal(userCartItem.getQuantity())));
+        //userShoppingCart.setTotal(product.getPricePerKey().multiply(new BigDecimal(userCartItem.getQuantity())));
+
+
+        BigDecimal total = BigDecimal.valueOf(0);
+        for (CartItem cartItem : cartItems) {
+            total = total.add(cartItem.getProduct().getPricePerKey().multiply(new BigDecimal(cartItem.getQuantity())));
+        }
+        //userShoppingCart.setTotal(product.getPricePerKey().multiply(new BigDecimal(userCartItem.getQuantity())));
+        userShoppingCart.setTotal(total);
         userShoppingCart.setModifiedAt(LocalDateTime.now());
         shoppingCartRepository.save(userShoppingCart);
+
+
 
         //Set<CartItem> userCartItems = getUserCartItems(userShoppingCart);
 
@@ -104,7 +117,6 @@ public class ShoppingCartService {
             CartItem newCartItem = new CartItem();
             newCartItem.setProduct(product);
             newCartItem.setQuantity(newCartItem.getQuantity() + 1);
-            newCartItem.setSellerEmail(sellerEmail);
             newCartItem.setCreatedAt(LocalDateTime.now());
             newCartItem.setModifiedAt(LocalDateTime.now());
             newCartItem.setShoppingCart(userShoppingCart);
@@ -133,13 +145,9 @@ public class ShoppingCartService {
     //@Transactional
     public void deleteShoppingCart(String userEmail) {
         AppUser appUser = appUserRepository.findAppUserByEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + userEmail + " was found")));
-        ShoppingCart shoppingCart = appUser.getShoppingCart();
+        ShoppingCart userShoppingCart = appUser.getShoppingCart();
         appUser.setShoppingCart(null);
-        shoppingCartRepository.delete(shoppingCart);
-        //ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartByUserEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No Shopping Cart with email " + userEmail + " was found")));
-        //shoppingCartRepository.delete(shoppingCart);
-
-        //shoppingCartRepository.deleteShoppingCartByUserEmail(userEmail);
+        shoppingCartRepository.delete(userShoppingCart);
     }
 
     //@Transactional
@@ -148,6 +156,28 @@ public class ShoppingCartService {
         ShoppingCart shoppingCart = cartItem.getShoppingCart();
         shoppingCart.setTotal(shoppingCart.getTotal().subtract(cartItem.getProduct().getPricePerKey().multiply(new BigDecimal(cartItem.getQuantity()))));
         cartItemRepository.delete(cartItem);
+    }
 
+    public ShoppingCartDto refreshShoppingCart(String userEmail) {
+        AppUser appUser = appUserRepository.findAppUserByEmail(userEmail).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + userEmail + " was found")));
+        ShoppingCart userShoppingCart = getUserShoppingCart(userEmail, appUser);
+
+        Set<CartItem> cartItems;
+        if (userShoppingCart.getCartItems() != null) {
+            cartItems = userShoppingCart.getCartItems();
+        } else {
+            cartItems = new HashSet<>();
+        }
+
+        BigDecimal total = BigDecimal.valueOf(0);
+        for (CartItem cartItem : cartItems) {
+            total = total.add(cartItem.getProduct().getPricePerKey().multiply(new BigDecimal(cartItem.getQuantity())));
+        }
+        //userShoppingCart.setTotal(product.getPricePerKey().multiply(new BigDecimal(userCartItem.getQuantity())));
+        userShoppingCart.setTotal(total);
+        userShoppingCart.setModifiedAt(LocalDateTime.now());
+        shoppingCartRepository.save(userShoppingCart);
+
+        return shoppingCartMapper.convertToDto(userShoppingCart);
     }
 }
