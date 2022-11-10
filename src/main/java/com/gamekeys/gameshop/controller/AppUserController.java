@@ -51,7 +51,7 @@ public class AppUserController extends ExceptionHandling {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/register") //former create
-    public ResponseEntity<AppUserDto> registerUser(@RequestBody @Valid AppUserDto appUserDto) throws UserNotFoundException, EmailExistException, MessagingException {
+    public ResponseEntity<AppUserDto> registerUser(@ModelAttribute @Valid AppUserDto appUserDto) throws UserNotFoundException, EmailExistException, MessagingException {
         AppUserDto newUser = appUserService.registerUser(appUserDto);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }

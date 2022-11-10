@@ -131,7 +131,7 @@ public class AppUserService implements UserDetailsService {
     }
 
     // This method is for creating new users (mostly with CommandLineRunner
-    public AppUserDto createNewUser(String firstName, String lastName, String email, String password, Role role, boolean isNotLocked, boolean isEnabled) throws UserNotFoundException, EmailExistException, IOException {
+    public AppUserDto createNewUser(String firstName, String lastName, String nickname, String email, String password, Role role, boolean isNotLocked, boolean isEnabled) throws UserNotFoundException, EmailExistException, IOException {
         validateNewUserEmail(EMPTY, email);
         AppUser appUser = new AppUser();
         AppRole userRole = appRoleRepository.findByRole(role);
@@ -139,6 +139,7 @@ public class AppUserService implements UserDetailsService {
 
         appUser.setFirstName(firstName);
         appUser.setLastName(lastName);
+        appUser.setNickname(nickname);
         appUser.setJoinDate(LocalDate.now());
         appUser.setEmail(email);
         appUser.setPassword(passwordEncoder.encode(password));

@@ -64,6 +64,10 @@ public class OrderDetailsMapper implements Mapper<OrderDetails, OrderDetailsDto>
         appUserBasicDto.setJoinDate(entity.getJoinDate());
         appUserBasicDto.setIsNotLocked(entity.getIsNotLocked());
         appUserBasicDto.setIsEnabled(entity.getIsEnabled());
+        appUserBasicDto.setNickname(entity.getNickname());
+        appUserBasicDto.setCountry(entity.getCountry());
+        appUserBasicDto.setGender(entity.getGender());
+        appUserBasicDto.setAge(entity.getAge());
         return appUserBasicDto;
     }
 
@@ -81,6 +85,7 @@ public class OrderDetailsMapper implements Mapper<OrderDetails, OrderDetailsDto>
         ProductBasicDto productBasicDto = new ProductBasicDto();
         productBasicDto.setId(entity.getId());
         productBasicDto.setPricePerKey(entity.getPricePerKey());
+        productBasicDto.setDiscountPercent(entity.getDiscountPercent());
         return productBasicDto;
     }
 

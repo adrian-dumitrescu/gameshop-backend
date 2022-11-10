@@ -101,6 +101,7 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
         ProductBasicDto result = new ProductBasicDto();
         result.setId(entity.getId());
         result.setPricePerKey(entity.getPricePerKey());
+        result.setDiscountPercent(entity.getDiscountPercent());
         return result;
     }
 

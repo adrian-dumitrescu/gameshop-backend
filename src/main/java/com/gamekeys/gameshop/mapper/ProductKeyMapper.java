@@ -41,6 +41,7 @@ public class ProductKeyMapper implements Mapper<ProductKey, ProductKeyDto> {
         ProductBasicDto productBasicDto = new ProductBasicDto();
         productBasicDto.setId(entity.getId());
         productBasicDto.setPricePerKey(entity.getPricePerKey());
+        productBasicDto.setDiscountPercent(entity.getDiscountPercent());
         return productBasicDto;
     }
 

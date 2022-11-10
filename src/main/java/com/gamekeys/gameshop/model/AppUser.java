@@ -62,6 +62,7 @@ public class AppUser implements Serializable {
 
     private String profileImageUrl;
 
+    @Column(nullable = false, unique = true)
     private String nickname;
 
     private String country;

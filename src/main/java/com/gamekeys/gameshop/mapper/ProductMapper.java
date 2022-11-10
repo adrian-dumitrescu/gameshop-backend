@@ -29,6 +29,7 @@ public class ProductMapper implements Mapper<Product, ProductDto> {
         ProductDto result = new ProductDto();
         result.setId(entity.getId());
         result.setPricePerKey(entity.getPricePerKey());
+        result.setDiscountPercent(entity.getDiscountPercent());
         if(entity.getUser() != null) {
             result.setUser(appUserToBasicDto(entity.getUser()));
         }
@@ -46,6 +47,7 @@ public class ProductMapper implements Mapper<Product, ProductDto> {
         Product result = new Product();
         result.setId(dto.getId());
         result.setPricePerKey(dto.getPricePerKey());
+        result.setDiscountPercent(dto.getDiscountPercent());
         if(dto.getUser() != null) {
             result.setUser(productRepository.getReferenceById(dto.getId()).getUser());
         }
@@ -70,6 +72,10 @@ public class ProductMapper implements Mapper<Product, ProductDto> {
         appUserBasicDto.setJoinDate(entity.getJoinDate());
         appUserBasicDto.setIsNotLocked(entity.getIsNotLocked());
         appUserBasicDto.setIsEnabled(entity.getIsEnabled());
+        appUserBasicDto.setNickname(entity.getNickname());
+        appUserBasicDto.setCountry(entity.getCountry());
+        appUserBasicDto.setGender(entity.getGender());
+        appUserBasicDto.setAge(entity.getAge());
         return appUserBasicDto;
     }
 

@@ -17,6 +17,8 @@ public class ProductDto {
 
     private BigDecimal pricePerKey;
 
+    private Integer discountPercent;
+
     private AppUserBasicDto user;
 
     private Set<ProductKeyBasicDto> productKeys;

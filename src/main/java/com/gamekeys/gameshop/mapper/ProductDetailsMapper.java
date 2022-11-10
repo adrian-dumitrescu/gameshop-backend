@@ -44,6 +44,7 @@ public class ProductDetailsMapper implements Mapper<ProductDetails, ProductDetai
         ProductBasicDto result = new ProductBasicDto();
         result.setId(entity.getId());
         result.setPricePerKey(entity.getPricePerKey());
+        result.setDiscountPercent(entity.getDiscountPercent());
         return result;
     }
 

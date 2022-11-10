@@ -27,6 +27,9 @@ public class Product implements Serializable {
     @Column(nullable = false)
     private BigDecimal pricePerKey;
 
+    //@Column(nullable = false)
+    private Integer discountPercent = 0;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_fk", nullable = false)
     //@JsonBackReference

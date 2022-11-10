@@ -22,8 +22,14 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("/all/{email}")
-    public ResponseEntity<List<ProductDto>> getUserProducts(@PathVariable("email") String userEmail) {
+    @GetMapping("/all")
+    public ResponseEntity<List<ProductDto>> getUserProducts() {
+        List<ProductDto> products = productService.getAllProducts();
+        return new ResponseEntity<>(products, OK);
+    }
+
+    @GetMapping("/all/{userEmail}")
+    public ResponseEntity<List<ProductDto>> getUserProducts(@PathVariable("userEmail") String userEmail) {
         List<ProductDto> userProducts = productService.getUserProducts(userEmail);
         return new ResponseEntity<>(userProducts, OK);
     }
@@ -32,9 +38,18 @@ public class ProductController {
     public ResponseEntity<ProductDto> addKeyToUserProducts(@RequestParam("activationKey") String activationKey,
                                                            @RequestParam("userEmail") String userEmail,
                                                            @RequestParam("productTitle") String productTitle,
-                                                           @RequestParam("productKeyPrice") BigDecimal productKeyPrice) {
-        ProductDto userProduct = productService.addKeyToUserProduct(activationKey, productKeyPrice, userEmail, productTitle);
+                                                           @RequestParam("productKeyPrice") BigDecimal productKeyPrice,
+                                                           @RequestParam("productKeyDiscount") Integer productKeyDiscount) {
+        ProductDto userProduct = productService.addKeyToUserProduct(activationKey, productKeyPrice, userEmail, productTitle, productKeyDiscount);
         return new ResponseEntity<>(userProduct, CREATED);
+    }
+
+    @PutMapping("/update/price")
+    public ResponseEntity<ProductDto> updateProductKeyPrice(@RequestParam("productId") Long productId,
+                                                            @RequestParam("productKeyPrice") BigDecimal productKeyPrice,
+                                                            @RequestParam("productKeyDiscount") Integer productKeyDiscount) {
+        ProductDto userProduct = productService.updateProductKeyPrice(productId, productKeyPrice, productKeyDiscount);
+        return new ResponseEntity<>(userProduct, OK);
     }
 
     @DeleteMapping("/delete/key")
@@ -47,7 +62,7 @@ public class ProductController {
 
     @DeleteMapping("/delete/product-inventory")
     public ResponseEntity<?> deleteProduct(@RequestParam("userEmail") String userEmail,
-                                                    @RequestParam("productTitle") String productTitle) {
+                                           @RequestParam("productTitle") String productTitle) {
         productService.deleteProductFromUser(userEmail, productTitle);
         return new ResponseEntity<>(OK);
     }

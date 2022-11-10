@@ -69,7 +69,15 @@ public class ShoppingCartService {
 
         BigDecimal total = BigDecimal.valueOf(0);
         for (CartItem cartItem : cartItems) {
-            total = total.add(cartItem.getProduct().getPricePerKey().multiply(new BigDecimal(cartItem.getQuantity())));
+            BigDecimal finalKeyPrice;
+            BigDecimal cartItemPrice = cartItem.getProduct().getPricePerKey();
+            Integer discountPercent = cartItem.getProduct().getDiscountPercent();
+            if(discountPercent!=0){
+                finalKeyPrice = getPriceAfterDiscount(cartItemPrice, discountPercent);
+                total = total.add(finalKeyPrice.multiply(new BigDecimal(cartItem.getQuantity())));
+            }else {
+                total = total.add(cartItemPrice.multiply(new BigDecimal(cartItem.getQuantity())));
+            }
         }
         //userShoppingCart.setTotal(product.getPricePerKey().multiply(new BigDecimal(userCartItem.getQuantity())));
         userShoppingCart.setTotal(total);
@@ -104,6 +112,10 @@ public class ShoppingCartService {
 ////            return cartItem.getProduct().getProductDetails().getTitle().equals(productTitle);
 ////        }).collect(Collectors.toSet());
 //    }
+
+    private BigDecimal getPriceAfterDiscount(BigDecimal pricePerKey, Integer productKeyDiscount) {
+        return pricePerKey.subtract(pricePerKey.multiply(BigDecimal.valueOf(productKeyDiscount)).divide(BigDecimal.valueOf(100)));
+    }
 
     private CartItem addItemToShoppingCart(ShoppingCart userShoppingCart, Product product, String sellerEmail, String clientEmail) {
         Optional<CartItem> optionalCartItem = cartItemRepository.findCartItemByShoppingCartUserEmailAndProduct(clientEmail, product);
