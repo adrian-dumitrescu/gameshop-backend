@@ -3,11 +3,9 @@ package com.gamekeys.gameshop.mapper;
 import com.gamekeys.gameshop.dto.basic.AppUserBasicDto;
 import com.gamekeys.gameshop.dto.basic.CartItemBasicDto;
 import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
+import com.gamekeys.gameshop.dto.basic.ProductDetailsBasicDto;
 import com.gamekeys.gameshop.dto.model.ShoppingCartDto;
-import com.gamekeys.gameshop.model.AppUser;
-import com.gamekeys.gameshop.model.CartItem;
-import com.gamekeys.gameshop.model.Product;
-import com.gamekeys.gameshop.model.ShoppingCart;
+import com.gamekeys.gameshop.model.*;
 import com.gamekeys.gameshop.repository.ShoppingCartRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,40 +51,49 @@ public class ShoppingCartMapper implements Mapper<ShoppingCart, ShoppingCartDto>
     }
 
     private AppUserBasicDto appUserToBasicDto(AppUser entity) {
-        AppUserBasicDto appUserBasicDto = new AppUserBasicDto();
-        appUserBasicDto.setId(entity.getId());
-        appUserBasicDto.setFirstName(entity.getFirstName());
-        appUserBasicDto.setLastName(entity.getLastName());
-        appUserBasicDto.setEmail(entity.getEmail());
-        appUserBasicDto.setPassword(entity.getPassword());
-        appUserBasicDto.setRoles(entity.getRoles());
-        appUserBasicDto.setProfileImageUrl(entity.getProfileImageUrl());
-        appUserBasicDto.setJoinDate(entity.getJoinDate());
-        appUserBasicDto.setIsNotLocked(entity.getIsNotLocked());
-        appUserBasicDto.setIsEnabled(entity.getIsEnabled());
-        appUserBasicDto.setNickname(entity.getNickname());
-        appUserBasicDto.setCountry(entity.getCountry());
-        appUserBasicDto.setGender(entity.getGender());
-        appUserBasicDto.setAge(entity.getAge());
-        return appUserBasicDto;
+        AppUserBasicDto result = new AppUserBasicDto();
+        result.setId(entity.getId());
+        result.setFirstName(entity.getFirstName());
+        result.setLastName(entity.getLastName());
+        result.setEmail(entity.getEmail());
+        result.setPassword(entity.getPassword());
+        result.setRoles(entity.getRoles());
+        result.setProfileImageUrl(entity.getProfileImageUrl());
+        result.setJoinDate(entity.getJoinDate());
+        result.setIsNotLocked(entity.getIsNotLocked());
+        result.setIsEnabled(entity.getIsEnabled());
+        result.setNickname(entity.getNickname());
+        result.setCountry(entity.getCountry());
+        result.setGender(entity.getGender());
+        result.setAge(entity.getAge());
+        return result;
     }
 
     private CartItemBasicDto cartItemToBasicDto(CartItem entity) {
-        CartItemBasicDto cartItemBasicDto = new CartItemBasicDto();
-        cartItemBasicDto.setId(entity.getId());
-        cartItemBasicDto.setQuantity(entity.getQuantity());
-        cartItemBasicDto.setCreatedAt(entity.getCreatedAt());
-        cartItemBasicDto.setModifiedAt(entity.getModifiedAt());
-        cartItemBasicDto.setProduct(productToBasicDto(entity.getProduct())); // demo
-        return cartItemBasicDto;
+        CartItemBasicDto result = new CartItemBasicDto();
+        result.setId(entity.getId());
+        result.setQuantity(entity.getQuantity());
+        result.setCreatedAt(entity.getCreatedAt());
+        result.setModifiedAt(entity.getModifiedAt());
+        result.setProduct(productToBasicDto(entity.getProduct())); // demo
+        return result;
     }
 
     private ProductBasicDto productToBasicDto(Product entity) {
-        ProductBasicDto productBasicDto = new ProductBasicDto();
-        productBasicDto.setId(entity.getId());
-        productBasicDto.setPricePerKey(entity.getPricePerKey());
-        productBasicDto.setDiscountPercent(entity.getDiscountPercent());
-        return productBasicDto;
+        ProductBasicDto result = new ProductBasicDto();
+        result.setId(entity.getId());
+        result.setPricePerKey(entity.getPricePerKey());
+        result.setDiscountPercent(entity.getDiscountPercent());
+        result.setProductDetails(productDetailsToBasicDto(entity.getProductDetails()));
+        return result;
+    }
+
+    private ProductDetailsBasicDto productDetailsToBasicDto(ProductDetails entity) {
+        ProductDetailsBasicDto result = new ProductDetailsBasicDto();
+        result.setId(entity.getId());
+        result.setTitle(entity.getTitle());
+        result.setPublisher(entity.getPublisher());
+        return result;
     }
 
 }

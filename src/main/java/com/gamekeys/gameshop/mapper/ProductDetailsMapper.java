@@ -1,6 +1,7 @@
 package com.gamekeys.gameshop.mapper;
 
 import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
+import com.gamekeys.gameshop.dto.basic.ProductDetailsBasicDto;
 import com.gamekeys.gameshop.dto.model.ProductDetailsDto;
 import com.gamekeys.gameshop.model.Product;
 import com.gamekeys.gameshop.model.ProductDetails;
@@ -45,6 +46,15 @@ public class ProductDetailsMapper implements Mapper<ProductDetails, ProductDetai
         result.setId(entity.getId());
         result.setPricePerKey(entity.getPricePerKey());
         result.setDiscountPercent(entity.getDiscountPercent());
+        result.setProductDetails(productDetailsToBasicDto(entity.getProductDetails()));
+        return result;
+    }
+
+    private ProductDetailsBasicDto productDetailsToBasicDto(ProductDetails entity) {
+        ProductDetailsBasicDto result = new ProductDetailsBasicDto();
+        result.setId(entity.getId());
+        result.setTitle(entity.getTitle());
+        result.setPublisher(entity.getPublisher());
         return result;
     }
 

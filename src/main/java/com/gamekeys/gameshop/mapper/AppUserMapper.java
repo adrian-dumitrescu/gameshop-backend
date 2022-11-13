@@ -1,13 +1,8 @@
 package com.gamekeys.gameshop.mapper;
 
+import com.gamekeys.gameshop.dto.basic.*;
 import com.gamekeys.gameshop.dto.model.AppUserDto;
-import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
-import com.gamekeys.gameshop.dto.basic.OrderDetailsBasicDto;
-import com.gamekeys.gameshop.dto.basic.ShoppingCartBasicDto;
-import com.gamekeys.gameshop.model.AppUser;
-import com.gamekeys.gameshop.model.Product;
-import com.gamekeys.gameshop.model.OrderDetails;
-import com.gamekeys.gameshop.model.ShoppingCart;
+import com.gamekeys.gameshop.model.*;
 import com.gamekeys.gameshop.repository.AppUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -85,8 +80,10 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
         result.setTotal(entity.getTotal());
         result.setCreatedAt(entity.getCreatedAt());
         result.setModifiedAt(entity.getModifiedAt());
+        result.setCartItems(entity.getCartItems().stream().map(cartItem -> cartItemToBasicDto(cartItem)).collect(Collectors.toSet()));
         return result;
     }
+
 
     private OrderDetailsBasicDto orderDetailsToBasicDto(OrderDetails entity) {
         OrderDetailsBasicDto result = new OrderDetailsBasicDto();
@@ -94,6 +91,7 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
         result.setTotal(entity.getTotal());
         result.setCreatedAt(entity.getCreatedAt());
         result.setModifiedAt(entity.getModifiedAt());
+        result.setOrderItem(entity.getOrderItems().stream().map(orderItem -> orderItemToBasicDto(orderItem)).collect(Collectors.toSet()));
         return result;
     }
 
@@ -102,6 +100,35 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
         result.setId(entity.getId());
         result.setPricePerKey(entity.getPricePerKey());
         result.setDiscountPercent(entity.getDiscountPercent());
+        result.setProductDetails(productDetailsToBasicDto(entity.getProductDetails()));
+        return result;
+    }
+
+    private CartItemBasicDto cartItemToBasicDto(CartItem entity) {
+        CartItemBasicDto result = new CartItemBasicDto();
+        result.setId(entity.getId());
+        result.setQuantity(entity.getQuantity());
+        result.setCreatedAt(entity.getCreatedAt());
+        result.setModifiedAt(entity.getModifiedAt());
+        result.setProduct(productToBasicDto(entity.getProduct())); // demo
+        return result;
+    }
+
+    private OrderItemBasicDto orderItemToBasicDto(OrderItem entity) {
+        OrderItemBasicDto result = new OrderItemBasicDto();
+        result.setId(entity.getId());
+        result.setQuantity(entity.getQuantity());
+        result.setCreatedAt(entity.getCreatedAt());
+        result.setModifiedAt(entity.getModifiedAt());
+        result.setProduct(productToBasicDto(entity.getProduct())); // demo
+        return result;
+    }
+
+    private ProductDetailsBasicDto productDetailsToBasicDto(ProductDetails entity) {
+        ProductDetailsBasicDto result = new ProductDetailsBasicDto();
+        result.setId(entity.getId());
+        result.setTitle(entity.getTitle());
+        result.setPublisher(entity.getPublisher());
         return result;
     }
 

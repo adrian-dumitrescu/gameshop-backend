@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data // This replaces the @Getter @Setter @NoArgsConstructor
 @Validated
@@ -21,6 +22,8 @@ public class OrderDetailsBasicDto {
     private LocalDateTime createdAt;
 
     private LocalDateTime modifiedAt;
+
+    private Set<OrderItemBasicDto> orderItem;
 
     // No reference to AppUserBasicDto user;
 

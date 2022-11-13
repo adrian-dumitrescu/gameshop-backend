@@ -58,14 +58,6 @@ public class ProductService {
         Set<ProductKey> userProductKeys = userProduct.getProductKeys();
         userProductKeys.add(newKey);
 
-//        userProduct.setProductKeys(userProductKeys); // this needs to add to the existing set. Now it just overwrites the set
-//        inventoryRepository.save(userProduct);
-//
-//        userInventories.add(userProduct);
-//        appUser.setProducts(userInventories);
-//        appUserRepository.save(appUser);
-
-
         return productMapper.convertToDto(userProduct);
     }
 

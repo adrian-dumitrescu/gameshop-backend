@@ -3,12 +3,12 @@ package com.gamekeys.gameshop.service;
 import com.gamekeys.gameshop.dto.model.AppUserDto;
 import com.gamekeys.gameshop.exception.domain.*;
 import com.gamekeys.gameshop.mapper.AppUserMapper;
-import com.gamekeys.gameshop.mapper.ProductKeyMapper;
 import com.gamekeys.gameshop.model.AppRole;
 import com.gamekeys.gameshop.model.AppUser;
 import com.gamekeys.gameshop.model.AppUserDetails;
 import com.gamekeys.gameshop.model.enums.Role;
-import com.gamekeys.gameshop.repository.*;
+import com.gamekeys.gameshop.repository.AppRoleRepository;
+import com.gamekeys.gameshop.repository.AppUserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -48,18 +48,14 @@ import static org.springframework.http.MediaType.*;
 public class AppUserService implements UserDetailsService {
 
     private final AppUserRepository appUserRepository;
+
     private final AppRoleRepository appRoleRepository;
-    private final ProductDetailsRepository productDetailsRepository;
-    private final ProductKeyRepository productKeyRepository;
-    private final ProductRepository productRepository;
 
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final LoginAttemptService loginAttemptService;
 
     private final AppUserMapper appUserMapper;
-    private final ProductKeyMapper productKeyMapper;
-
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -75,19 +71,6 @@ public class AppUserService implements UserDetailsService {
             appUserRepository.save(appUser);
             log.info(FOUND_USER_BY_EMAIL + email);
             return new AppUserDetails(appUser);
-        }
-    }
-
-    private void bruteForceAttackCheck(AppUser appUser) {
-        if (appUser.getIsNotLocked()) { // If the account is not locked (false)
-            if (loginAttemptService.hasExceededMaxAttempts(appUser.getEmail())) { // If the user attempted login more than 5 times
-                appUser.setIsNotLocked(false); // we lock the account
-            } else {
-                appUser.setIsNotLocked(true); // keep it unlocked. Redundant?
-            }
-        } else { // if the account is locked
-            // If the user was ever in the cache, we remove it
-            loginAttemptService.evictUserFromLoginAttemptCache(appUser.getEmail());
         }
     }
 
@@ -120,14 +103,6 @@ public class AppUserService implements UserDetailsService {
         log.info("New user password: " + appUserEntity.getPassword());
         //emailService.sendNewPasswordEmail(firstName, password, email);
         return appUserMapper.convertToDto(appUserEntity);
-
-//        AppRole role = new AppRole();
-//        role.setRole(ROLE_USER);
-        //appUserEntity.addRole(new AppRole(ROLE_USER));
-//        AppRole user = new AppRole(ROLE_USER);
-//        appUserRoleRepository.saveAll(List.of(user));
-        //AppRole userRole = appUserRoleRepository.findByRole(Role.ROLE_USER);
-        //AppRole userRole = new AppRole(Role.ROLE_USER);
     }
 
     // This method is for creating new users (mostly with CommandLineRunner
@@ -197,7 +172,6 @@ public class AppUserService implements UserDetailsService {
         return appUserMapper.convertToDto(appUser);
     }
 
-
     private void saveProfileImage(AppUser user, MultipartFile profileImage) throws IOException, NotAnImageFileException {
         if (profileImage != null) {
             if (!Arrays.asList(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, IMAGE_GIF_VALUE).contains(profileImage.getContentType())) {
@@ -262,16 +236,25 @@ public class AppUserService implements UserDetailsService {
     }
 
 
-//    public AppUserDto getUserByEmail(String email) {
-//        log.info("Fetching user {}", email);
-//        AppUser appUser = appUserRepository.findAppUserByEmail(email).orElseThrow(() -> new EntityNotFoundException(String.format("No user with email " + email + " was found")));
-//        return appUserMapper.convertToDto(appUser);
-//    }
-
     public boolean checkIfUserExists(String email) {
         return appUserRepository.existsAppUserByEmail(email);
     }
 
+    private void bruteForceAttackCheck(AppUser appUser) {
+        // If the account is not locked (false)
+        if (appUser.getIsNotLocked()) {
+            // If the user attempted login more than 5 times
+            if (loginAttemptService.hasExceededMaxAttempts(appUser.getEmail())) {
+                appUser.setIsNotLocked(false); // we lock the account
+            } else {
+                appUser.setIsNotLocked(true); // set to not locked
+            }
+            // if the account is locked
+        } else {
+            // If the user was ever in the cache, we remove it
+            loginAttemptService.evictUserFromLoginAttemptCache(appUser.getEmail());
+        }
+    }
 
     private AppUser validateNewUserEmail(String currentEmail, String newEmail) throws UserNotFoundException, EmailExistException {
 

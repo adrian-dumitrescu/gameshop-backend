@@ -45,11 +45,17 @@ public class ShoppingCartController {
         return new ResponseEntity<>(NO_CONTENT);
     }
 
-    @DeleteMapping("/delete/item")
-    public ResponseEntity<?> deleteItemFromShoppingCart(@RequestParam("userEmail") String userEmail,
-                                                        @RequestParam("productTitle") String productTitle) {
-        shoppingCartService.deleteItemFromShoppingCart(userEmail, productTitle);
+    @DeleteMapping("/delete/item/by-title")
+    public ResponseEntity<?> deleteItemFromShoppingCartByTitle(@RequestParam("userEmail") String userEmail,
+                                                               @RequestParam("productTitle") String productTitle) {
+        shoppingCartService.deleteItemFromShoppingCartByTitle(userEmail, productTitle);
         return new ResponseEntity<>(NO_CONTENT);
+    }
+
+    @DeleteMapping("/delete/item/{cartItemId}")
+    public ResponseEntity<ShoppingCartDto> deleteItemFromShoppingCartById(@PathVariable("cartItemId") Long cartItemId) {
+        ShoppingCartDto shoppingCart = shoppingCartService.deleteItemFromShoppingCartById(cartItemId);
+        return new ResponseEntity<>(shoppingCart, OK);
     }
 
 }

@@ -13,11 +13,6 @@ public class AuthenticationFailureListener {
     private LoginAttemptService loginAttemptService;
 
 
-//    @Autowired
-//    public AuthenticationFailureListener(LoginAttemptService loginAttemptService) {
-//        this.loginAttemptService = loginAttemptService;
-//    }
-
     // When BadCredentialEvent happens, this triggers
     @Async
     @EventListener

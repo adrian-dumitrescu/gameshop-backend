@@ -27,11 +27,11 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     public JWTAuthorizationFilter(JWTTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
-
     // Check to make sure that the token is valid, the user is valid
     // then set that user as the authenticated user.
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         // When the request comes in, we make sure that it's not OPTIONS, if it is,
         // we set the response to OK because we are not doing anything
         if (request.getMethod().equalsIgnoreCase(SecurityConstant.OPTIONS_HTTP_METHOD)){

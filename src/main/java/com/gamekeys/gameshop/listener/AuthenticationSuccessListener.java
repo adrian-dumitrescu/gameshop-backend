@@ -13,12 +13,6 @@ import org.springframework.stereotype.Component;
 public class AuthenticationSuccessListener {
     private LoginAttemptService loginAttemptService;
 
-
-//    @Autowired
-//    public AuthenticationSuccessListener(LoginAttemptService loginAttemptService) {
-//        this.loginAttemptService = loginAttemptService;
-//    }
-
     @Async
     @EventListener
     public void onAuthenticationSuccess(AuthenticationSuccessEvent event) {

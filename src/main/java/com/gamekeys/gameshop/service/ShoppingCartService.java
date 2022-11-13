@@ -49,7 +49,7 @@ public class ShoppingCartService {
 
         ShoppingCart userShoppingCart = getUserShoppingCart(clientEmail, clientUser);
 
-        CartItem userCartItem = addItemToShoppingCart(userShoppingCart, product, sellerEmail, clientEmail);
+        CartItem userCartItem = addItemToShoppingCart(userShoppingCart, product, clientEmail);
 
         Set<CartItem> cartItems;
         if (userShoppingCart.getCartItems() != null) {
@@ -117,7 +117,7 @@ public class ShoppingCartService {
         return pricePerKey.subtract(pricePerKey.multiply(BigDecimal.valueOf(productKeyDiscount)).divide(BigDecimal.valueOf(100)));
     }
 
-    private CartItem addItemToShoppingCart(ShoppingCart userShoppingCart, Product product, String sellerEmail, String clientEmail) {
+    private CartItem addItemToShoppingCart(ShoppingCart userShoppingCart, Product product, String clientEmail) {
         Optional<CartItem> optionalCartItem = cartItemRepository.findCartItemByShoppingCartUserEmailAndProduct(clientEmail, product);
         if (optionalCartItem.isPresent()) {
             CartItem cartItem = optionalCartItem.get();
@@ -163,11 +163,22 @@ public class ShoppingCartService {
     }
 
     //@Transactional
-    public void deleteItemFromShoppingCart(String userEmail, String productTitle) {
+    public void deleteItemFromShoppingCartByTitle(String userEmail, String productTitle) {
         CartItem cartItem = cartItemRepository.findCartItemByShoppingCartUserEmailAndProductProductDetailsTitle(userEmail, productTitle).orElseThrow(() -> new EntityNotFoundException(String.format("No cart item with email " + userEmail + " and product title " + productTitle + " was found")));
         ShoppingCart shoppingCart = cartItem.getShoppingCart();
         shoppingCart.setTotal(shoppingCart.getTotal().subtract(cartItem.getProduct().getPricePerKey().multiply(new BigDecimal(cartItem.getQuantity()))));
         cartItemRepository.delete(cartItem);
+    }
+
+    public ShoppingCartDto deleteItemFromShoppingCartById(Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new EntityNotFoundException(String.format("No cart item with id " + cartItemId + " was found")));
+        ShoppingCart shoppingCart = cartItem.getShoppingCart();
+
+        BigDecimal discountedPrice = getPriceAfterDiscount(cartItem.getProduct().getPricePerKey(), cartItem.getProduct().getDiscountPercent());
+        //shoppingCart.setTotal(shoppingCart.getTotal().subtract(cartItem.getProduct().getPricePerKey().multiply(new BigDecimal(cartItem.getQuantity()))));
+        shoppingCart.setTotal(shoppingCart.getTotal().subtract(discountedPrice.multiply(new BigDecimal(cartItem.getQuantity()))));
+        cartItemRepository.delete(cartItem);
+        return shoppingCartMapper.convertToDto(shoppingCart);
     }
 
     public ShoppingCartDto refreshShoppingCart(String userEmail) {
@@ -192,4 +203,6 @@ public class ShoppingCartService {
 
         return shoppingCartMapper.convertToDto(userShoppingCart);
     }
+
+
 }

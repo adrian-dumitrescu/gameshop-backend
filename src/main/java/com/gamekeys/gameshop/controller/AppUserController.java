@@ -50,7 +50,7 @@ public class AppUserController extends ExceptionHandling {
     private JWTTokenProvider jwtTokenProvider;
     private AuthenticationManager authenticationManager;
 
-    @PostMapping("/register") //former create
+    @PostMapping("/register")
     public ResponseEntity<AppUserDto> registerUser(@ModelAttribute @Valid AppUserDto appUserDto) throws UserNotFoundException, EmailExistException, MessagingException {
         AppUserDto newUser = appUserService.registerUser(appUserDto);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
