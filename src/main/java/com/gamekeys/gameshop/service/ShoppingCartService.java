@@ -205,4 +205,28 @@ public class ShoppingCartService {
     }
 
 
+    public ShoppingCartDto incrementItemQuantity(Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new EntityNotFoundException(String.format("No cart item with id " + cartItemId + " was found")));
+        cartItem.setQuantity(cartItem.getQuantity() + 1);
+        ShoppingCart shoppingCart = cartItem.getShoppingCart();
+
+        BigDecimal discountedPrice = getPriceAfterDiscount(cartItem.getProduct().getPricePerKey(), cartItem.getProduct().getDiscountPercent());
+        shoppingCart.setTotal(shoppingCart.getTotal().add(discountedPrice));
+        shoppingCartRepository.save(shoppingCart);
+
+        return shoppingCartMapper.convertToDto(shoppingCart);
+    }
+
+    public ShoppingCartDto decrementItemQuantity(Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() -> new EntityNotFoundException(String.format("No cart item with id " + cartItemId + " was found")));
+        ShoppingCart shoppingCart = cartItem.getShoppingCart();
+        if(cartItem.getQuantity() > 1) {
+            cartItem.setQuantity(cartItem.getQuantity() - 1);
+
+            BigDecimal discountedPrice = getPriceAfterDiscount(cartItem.getProduct().getPricePerKey(), cartItem.getProduct().getDiscountPercent());
+            shoppingCart.setTotal(shoppingCart.getTotal().subtract(discountedPrice));
+            shoppingCartRepository.save(shoppingCart);
+        }
+        return shoppingCartMapper.convertToDto(shoppingCart);
+    }
 }

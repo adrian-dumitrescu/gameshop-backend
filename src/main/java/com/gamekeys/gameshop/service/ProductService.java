@@ -35,7 +35,12 @@ public class ProductService {
 
     public List<ProductDto> getAllProducts() {
         List<Product> products = productRepository.findAll();
-        return products.stream().map(product -> productMapper.convertToDto(product)).collect(Collectors.toList());
+        return products.stream().map(product -> {
+            if(product.getProductKeys().size() > 0) {
+                return productMapper.convertToDto(product);
+            }
+            return null;
+        }).collect(Collectors.toList());
     }
 
     public List<ProductDto> getUserProducts(String userEmail) {
@@ -94,12 +99,13 @@ public class ProductService {
         productKeyRepository.delete(productKey);
 
         Product userProduct = productRepository.findProductByUserEmailAndProductDetailsTitle(userEmail, productTitle).orElseThrow(() -> new EntityNotFoundException(String.format("No inventory with user email " + userEmail + " and product title " + productTitle + " was found")));
-        if(userProduct.getProductKeys().size() > 0){
-            return productMapper.convertToDto(userProduct);
-        }else{
-            productRepository.delete(userProduct);
-            return productMapper.convertToDto(userProduct);
-        }
+        return productMapper.convertToDto(userProduct);
+        //        if(userProduct.getProductKeys().size() > 0){
+//            return productMapper.convertToDto(userProduct);
+//        }else{
+//            productRepository.delete(userProduct);
+//            return productMapper.convertToDto(userProduct);
+//        }
     }
 
     public void deleteProductFromUser(String userEmail, String productTitle) {

@@ -89,6 +89,8 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
         OrderDetailsBasicDto result = new OrderDetailsBasicDto();
         result.setId(entity.getId());
         result.setTotal(entity.getTotal());
+        result.setWithGuard(entity.getWithGuard());
+        result.setPaymentOption(entity.getPaymentOption());
         result.setCreatedAt(entity.getCreatedAt());
         result.setModifiedAt(entity.getModifiedAt());
         result.setOrderItem(entity.getOrderItems().stream().map(orderItem -> orderItemToBasicDto(orderItem)).collect(Collectors.toSet()));
@@ -128,6 +130,11 @@ public class AppUserMapper implements Mapper<AppUser, AppUserDto> {
         ProductDetailsBasicDto result = new ProductDetailsBasicDto();
         result.setId(entity.getId());
         result.setTitle(entity.getTitle());
+        result.setSummary(entity.getSummary());
+        result.setContentRating(entity.getContentRating());
+        result.setInitialRelease(entity.getInitialRelease());
+        result.setGenres(entity.getGenres());
+        result.setPlatforms(entity.getPlatforms());
         result.setPublisher(entity.getPublisher());
         return result;
     }

@@ -3,11 +3,9 @@ package com.gamekeys.gameshop.mapper;
 import com.gamekeys.gameshop.dto.basic.AppUserBasicDto;
 import com.gamekeys.gameshop.dto.basic.OrderItemBasicDto;
 import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
+import com.gamekeys.gameshop.dto.basic.ProductDetailsBasicDto;
 import com.gamekeys.gameshop.dto.model.OrderDetailsDto;
-import com.gamekeys.gameshop.model.AppUser;
-import com.gamekeys.gameshop.model.OrderDetails;
-import com.gamekeys.gameshop.model.OrderItem;
-import com.gamekeys.gameshop.model.Product;
+import com.gamekeys.gameshop.model.*;
 import com.gamekeys.gameshop.repository.OrderDetailsRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +23,8 @@ public class OrderDetailsMapper implements Mapper<OrderDetails, OrderDetailsDto>
         OrderDetailsDto result = new OrderDetailsDto();
         result.setId(entity.getId());
         result.setTotal(entity.getTotal());
+        result.setWithGuard(entity.getWithGuard());
+        result.setPaymentOption(entity.getPaymentOption());
         result.setCreatedAt(entity.getCreatedAt());
         result.setModifiedAt(entity.getModifiedAt());
         if(entity.getUser() != null) {
@@ -41,6 +41,8 @@ public class OrderDetailsMapper implements Mapper<OrderDetails, OrderDetailsDto>
         OrderDetails result = new OrderDetails();
         result.setId(dto.getId());
         result.setTotal(dto.getTotal());
+        result.setWithGuard(dto.getWithGuard());
+        result.setPaymentOption(dto.getPaymentOption());
         result.setCreatedAt(dto.getCreatedAt());
         result.setModifiedAt(dto.getModifiedAt());
         if(dto.getUser() != null) {
@@ -53,40 +55,54 @@ public class OrderDetailsMapper implements Mapper<OrderDetails, OrderDetailsDto>
     }
 
     private AppUserBasicDto appUserToBasicDto(AppUser entity) {
-        AppUserBasicDto appUserBasicDto = new AppUserBasicDto();
-        appUserBasicDto.setId(entity.getId());
-        appUserBasicDto.setFirstName(entity.getFirstName());
-        appUserBasicDto.setLastName(entity.getLastName());
-        appUserBasicDto.setEmail(entity.getEmail());
-        appUserBasicDto.setPassword(entity.getPassword());
-        appUserBasicDto.setRoles(entity.getRoles());
-        appUserBasicDto.setProfileImageUrl(entity.getProfileImageUrl());
-        appUserBasicDto.setJoinDate(entity.getJoinDate());
-        appUserBasicDto.setIsNotLocked(entity.getIsNotLocked());
-        appUserBasicDto.setIsEnabled(entity.getIsEnabled());
-        appUserBasicDto.setNickname(entity.getNickname());
-        appUserBasicDto.setCountry(entity.getCountry());
-        appUserBasicDto.setGender(entity.getGender());
-        appUserBasicDto.setAge(entity.getAge());
-        return appUserBasicDto;
+        AppUserBasicDto result = new AppUserBasicDto();
+        result.setId(entity.getId());
+        result.setFirstName(entity.getFirstName());
+        result.setLastName(entity.getLastName());
+        result.setEmail(entity.getEmail());
+        result.setPassword(entity.getPassword());
+        result.setRoles(entity.getRoles());
+        result.setProfileImageUrl(entity.getProfileImageUrl());
+        result.setJoinDate(entity.getJoinDate());
+        result.setIsNotLocked(entity.getIsNotLocked());
+        result.setIsEnabled(entity.getIsEnabled());
+        result.setNickname(entity.getNickname());
+        result.setCountry(entity.getCountry());
+        result.setGender(entity.getGender());
+        result.setAge(entity.getAge());
+        return result;
     }
 
     private OrderItemBasicDto orderItemToBasicDto(OrderItem entity) {
-        OrderItemBasicDto orderItemBasicDto = new OrderItemBasicDto();
-        orderItemBasicDto.setId(entity.getId());
-        orderItemBasicDto.setQuantity(entity.getQuantity());
-        orderItemBasicDto.setCreatedAt(entity.getCreatedAt());
-        orderItemBasicDto.setModifiedAt(entity.getModifiedAt());
-        orderItemBasicDto.setProduct(productToBasicDto(entity.getProduct())); // demo
-        return orderItemBasicDto;
+        OrderItemBasicDto result = new OrderItemBasicDto();
+        result.setId(entity.getId());
+        result.setQuantity(entity.getQuantity());
+        result.setCreatedAt(entity.getCreatedAt());
+        result.setModifiedAt(entity.getModifiedAt());
+        result.setProduct(productToBasicDto(entity.getProduct())); // demo
+        return result;
     }
 
     private ProductBasicDto productToBasicDto(Product entity) {
-        ProductBasicDto productBasicDto = new ProductBasicDto();
-        productBasicDto.setId(entity.getId());
-        productBasicDto.setPricePerKey(entity.getPricePerKey());
-        productBasicDto.setDiscountPercent(entity.getDiscountPercent());
-        return productBasicDto;
+        ProductBasicDto result = new ProductBasicDto();
+        result.setId(entity.getId());
+        result.setPricePerKey(entity.getPricePerKey());
+        result.setDiscountPercent(entity.getDiscountPercent());
+        result.setProductDetails(productDetailsToBasicDto(entity.getProductDetails()));
+        return result;
+    }
+
+    private ProductDetailsBasicDto productDetailsToBasicDto(ProductDetails entity) {
+        ProductDetailsBasicDto result = new ProductDetailsBasicDto();
+        result.setId(entity.getId());
+        result.setTitle(entity.getTitle());
+        result.setSummary(entity.getSummary());
+        result.setContentRating(entity.getContentRating());
+        result.setInitialRelease(entity.getInitialRelease());
+        result.setGenres(entity.getGenres());
+        result.setPlatforms(entity.getPlatforms());
+        result.setPublisher(entity.getPublisher());
+        return result;
     }
 
 }

@@ -18,7 +18,6 @@ public class ShoppingCartController {
 
     private final ShoppingCartService shoppingCartService;
 
-
     @GetMapping("/all/{userEmail}")
     public ResponseEntity<ShoppingCartDto> getShoppingCart(@PathVariable("userEmail") String userEmail) {
         ShoppingCartDto shoppingCart = shoppingCartService.getShoppingCart(userEmail);
@@ -31,6 +30,18 @@ public class ShoppingCartController {
                                                                  @RequestParam("productTitle") String productTitle) {
         ShoppingCartDto shoppingCart = shoppingCartService.addItemToShoppingCart(clientEmail, sellerEmail, productTitle);
         return new ResponseEntity<>(shoppingCart, CREATED);
+    }
+
+    @PutMapping("/increment")
+    public ResponseEntity<ShoppingCartDto> incrementItemQuantity(@RequestParam("cartItemId") Long cartItemId) {
+        ShoppingCartDto shoppingCart = shoppingCartService.incrementItemQuantity(cartItemId);
+        return new ResponseEntity<>(shoppingCart, OK);
+    }
+
+    @PutMapping("/decrement")
+    public ResponseEntity<ShoppingCartDto> decrementItemQuantity(@RequestParam("cartItemId") Long cartItemId) {
+        ShoppingCartDto shoppingCart = shoppingCartService.decrementItemQuantity(cartItemId);
+        return new ResponseEntity<>(shoppingCart, OK);
     }
 
     @PutMapping("/refresh")

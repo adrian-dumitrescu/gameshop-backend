@@ -91,6 +91,11 @@ public class ProductMapper implements Mapper<Product, ProductDto> {
         ProductDetailsBasicDto result = new ProductDetailsBasicDto();
         result.setId(entity.getId());
         result.setTitle(entity.getTitle());
+        result.setSummary(entity.getSummary());
+        result.setContentRating(entity.getContentRating());
+        result.setInitialRelease(entity.getInitialRelease());
+        result.setGenres(entity.getGenres());
+        result.setPlatforms(entity.getPlatforms());
         result.setPublisher(entity.getPublisher());
         return result;
     }

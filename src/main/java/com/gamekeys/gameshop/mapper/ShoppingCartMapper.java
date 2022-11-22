@@ -69,6 +69,25 @@ public class ShoppingCartMapper implements Mapper<ShoppingCart, ShoppingCartDto>
         return result;
     }
 
+    private AppUserBasicDto sellerUserToBasicDto(AppUser entity) {
+        AppUserBasicDto result = new AppUserBasicDto();
+        result.setId(entity.getId());
+        result.setFirstName(entity.getFirstName());
+        result.setLastName(entity.getLastName());
+        result.setEmail(entity.getEmail());
+        result.setPassword(entity.getPassword());
+        result.setRoles(entity.getRoles());
+        result.setProfileImageUrl(entity.getProfileImageUrl());
+        result.setJoinDate(entity.getJoinDate());
+        result.setIsNotLocked(entity.getIsNotLocked());
+        result.setIsEnabled(entity.getIsEnabled());
+        result.setNickname(entity.getNickname());
+        result.setCountry(entity.getCountry());
+        result.setGender(entity.getGender());
+        result.setAge(entity.getAge());
+        return result;
+    }
+
     private CartItemBasicDto cartItemToBasicDto(CartItem entity) {
         CartItemBasicDto result = new CartItemBasicDto();
         result.setId(entity.getId());
@@ -84,6 +103,7 @@ public class ShoppingCartMapper implements Mapper<ShoppingCart, ShoppingCartDto>
         result.setId(entity.getId());
         result.setPricePerKey(entity.getPricePerKey());
         result.setDiscountPercent(entity.getDiscountPercent());
+        result.setUser(sellerUserToBasicDto(entity.getUser()));
         result.setProductDetails(productDetailsToBasicDto(entity.getProductDetails()));
         return result;
     }

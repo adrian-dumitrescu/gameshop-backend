@@ -19,6 +19,10 @@ public class OrderDetailsBasicDto {
 
     private BigDecimal total;
 
+    private Boolean withGuard;
+
+    private String paymentOption;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime modifiedAt;

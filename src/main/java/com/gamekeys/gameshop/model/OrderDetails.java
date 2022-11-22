@@ -26,6 +26,10 @@ public class OrderDetails implements Serializable {
 
     private BigDecimal total = BigDecimal.valueOf(0);
 
+    private Boolean withGuard;
+
+    private String paymentOption;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime modifiedAt;

@@ -26,9 +26,17 @@ public class OrderDetailsController {
         return new ResponseEntity<>(orderDetails, OK);
     }
 
+//    @PostMapping("/purchase")
+//    public ResponseEntity<OrderDetailsDto> createPurchaseOrder(@RequestParam("clientEmail") String clientEmail) throws NotEnoughStockException {
+//        OrderDetailsDto orderDetails = orderDetailsService.createPurchaseOrder(clientEmail);
+//        return new ResponseEntity<>(orderDetails, CREATED);
+//    }
+
     @PostMapping("/purchase")
-    public ResponseEntity<OrderDetailsDto> createPurchaseOrder(@RequestParam("clientEmail") String clientEmail) throws NotEnoughStockException {
-        OrderDetailsDto orderDetails = orderDetailsService.createPurchaseOrder(clientEmail);
+    public ResponseEntity<OrderDetailsDto> createPurchaseOrder(@RequestParam("clientEmail") String clientEmail,
+                                                               @RequestParam("guardProtection") Boolean guardProtection,
+                                                               @RequestParam("paymentOption") String paymentOption) throws NotEnoughStockException {
+        OrderDetailsDto orderDetails = orderDetailsService.createPurchaseOrder(clientEmail, guardProtection, paymentOption);
         return new ResponseEntity<>(orderDetails, CREATED);
     }
 

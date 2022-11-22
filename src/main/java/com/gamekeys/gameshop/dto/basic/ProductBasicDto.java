@@ -19,6 +19,8 @@ public class ProductBasicDto {
 
     private Integer discountPercent;
 
+    private AppUserBasicDto user;
+
     private ProductDetailsBasicDto productDetails;
 
     // No reference to AppUser user

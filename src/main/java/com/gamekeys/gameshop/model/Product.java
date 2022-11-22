@@ -60,7 +60,7 @@ public class Product implements Serializable {
     //@JsonManagedReference
     private Set<CartItem> cartItems = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     //@JsonIgnore
     //@JsonManagedReference
     private Set<OrderItem> orderItems = new HashSet<>();

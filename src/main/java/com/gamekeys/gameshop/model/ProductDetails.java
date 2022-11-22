@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +30,18 @@ public class ProductDetails implements Serializable {
     //@Enumerated(EnumType.STRING)
     private String title;
 
+    // Product Description Fields:
+    @Column(length = 350)
+    private String summary;
+
+    private String contentRating;
+
+    private LocalDate initialRelease;
+
+    private String genres;
+
+    private String platforms;
+
     @Column(nullable = false)
     //@Enumerated(EnumType.STRING)
     private String publisher;
@@ -43,6 +56,17 @@ public class ProductDetails implements Serializable {
     public ProductDetails(Long id, String title, String publisher) {
         this.id = id;
         this.title = title;
+        this.publisher = publisher;
+    }
+
+    public ProductDetails(Long id, String title, String summary, String contentRating, LocalDate initialRelease, String genres, String platforms, String publisher) {
+        this.id = id;
+        this.title = title;
+        this.summary = summary;
+        this.contentRating = contentRating;
+        this.initialRelease = initialRelease;
+        this.genres = genres;
+        this.platforms = platforms;
         this.publisher = publisher;
     }
 }

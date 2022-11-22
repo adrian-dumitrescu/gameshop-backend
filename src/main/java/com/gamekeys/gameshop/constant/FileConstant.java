@@ -14,6 +14,8 @@ public class FileConstant {
     public static final String FORWARD_SLASH = "/";
     public static final String NOT_AN_IMAGE_FILE = " is not an image file. Please upload an image file";
     public static final String ROBOHASH_IMAGE_BASE_URL = "https://robohash.org/";
+    public static final Integer GAMEKEY_GUARD_EUROS = 2;
+
 
     public static final String SET_2_URL = "?set=set2";
 

@@ -26,6 +26,8 @@ public interface ProductKeyRepository extends JpaRepository<ProductKey, Long> {
 
     void deleteByActivationKey(String activationKey);
 
+    Optional<Set<ProductKey>>  getAllByProductId(Long productId);
+
     //Integer countByInventoryProductTitle(String productTitle); // maybe countByInventoryUserEmailAndProductTitle
 
 }
