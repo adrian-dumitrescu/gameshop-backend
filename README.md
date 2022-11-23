@@ -5,8 +5,9 @@ Complete Back-end and Front-end application for game keys purchase.
 - [x] Spring Security - Authentication & Authorization with Roles
 - [x] JWT Authentication
 - [x] Email notifications
-- [x] Front End - Angular - [FrontEnd-app](https://github.com/adrian-dumitrescu/gameshop-frontend)
+- [x] Front End - Angular - Repo: [FrontEnd-app](https://github.com/adrian-dumitrescu/gameshop-frontend)
+- [x] Back End - SpringBoot - Repo: [FrontEnd-app](https://github.com/adrian-dumitrescu/gameshop-backend)
 
-![mainpage](https://user-images.githubusercontent.com/50441692/193368815-5f358bf7-3d18-42ca-abcd-8c203cf373e9.png)
+![image](https://user-images.githubusercontent.com/50441692/203560641-7cac3e47-656c-4b02-91c3-e0a5efbee6f2.png)
 
 ```
