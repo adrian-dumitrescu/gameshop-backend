@@ -61,8 +61,8 @@ public class WebSecurityConfig {
                 .and()
                 .sessionManagement().sessionCreationPolicy(STATELESS) // With JWT, we don't need to keep track of who is logged in, so we can set STATELESS instead of STATEFUL
                 .and()
-                .authorizeRequests().antMatchers("/api/**").permitAll().and() // provisory
-                .authorizeRequests().antMatchers("/api/user/all", "/api/user/create", "/api/user/update").hasRole("SUPER_ADMIN").and()
+                //.authorizeRequests().antMatchers("/api/**").permitAll().and() // just let everything pass through
+                .authorizeRequests().antMatchers("/api/user/create", "/api/user/update", "/api/user/delete/**").hasRole("SUPER_ADMIN").and()
                 .authorizeRequests().antMatchers(PUBLIC_URLS).permitAll() // We are telling the app the list of URLs that we are allowing the user to access without being authenticated
                 .anyRequest().authenticated()
                 .and()
