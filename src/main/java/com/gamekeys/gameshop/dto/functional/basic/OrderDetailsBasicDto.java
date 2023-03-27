@@ -1,4 +1,4 @@
-package com.gamekeys.gameshop.dto.basic;
+package com.gamekeys.gameshop.dto.functional.basic;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

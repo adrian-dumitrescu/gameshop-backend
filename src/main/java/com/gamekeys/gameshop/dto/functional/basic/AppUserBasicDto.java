@@ -1,4 +1,4 @@
-package com.gamekeys.gameshop.dto.basic;
+package com.gamekeys.gameshop.dto.functional.basic;
 
 import com.gamekeys.gameshop.model.AppRole;
 import lombok.AllArgsConstructor;

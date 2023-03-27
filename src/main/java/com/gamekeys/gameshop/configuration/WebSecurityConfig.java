@@ -55,7 +55,7 @@ public class WebSecurityConfig {
         // Which one to secure/leave open
         // First we tell to not use Cross Site Request Forgery because we are not using it
         // We add Cross Origin resource Sharing because we don't want anyone from any URL to be able to connect to our API
-        // We want ony a specific list to be able to do that. Disabling it will allow anyone from any domain to send a request to our application
+        // We want only a specific list to be able to do that. Disabling it will allow anyone from any domain to send a request to our application
         // and the application will try to process it.
         http.csrf().disable().cors()
                 .and()

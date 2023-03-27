@@ -1,9 +1,9 @@
 package com.gamekeys.gameshop.mapper;
 
-import com.gamekeys.gameshop.dto.basic.ProductDetailsBasicDto;
+import com.gamekeys.gameshop.dto.functional.basic.ProductDetailsBasicDto;
 import com.gamekeys.gameshop.dto.model.ProductDto;
-import com.gamekeys.gameshop.dto.basic.AppUserBasicDto;
-import com.gamekeys.gameshop.dto.basic.ProductKeyBasicDto;
+import com.gamekeys.gameshop.dto.functional.basic.AppUserBasicDto;
+import com.gamekeys.gameshop.dto.functional.basic.ProductKeyBasicDto;
 import com.gamekeys.gameshop.model.AppUser;
 import com.gamekeys.gameshop.model.Product;
 import com.gamekeys.gameshop.model.ProductDetails;

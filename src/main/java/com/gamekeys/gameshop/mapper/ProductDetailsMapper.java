@@ -1,7 +1,7 @@
 package com.gamekeys.gameshop.mapper;
 
-import com.gamekeys.gameshop.dto.basic.ProductBasicDto;
-import com.gamekeys.gameshop.dto.basic.ProductDetailsBasicDto;
+import com.gamekeys.gameshop.dto.functional.basic.ProductBasicDto;
+import com.gamekeys.gameshop.dto.functional.basic.ProductDetailsBasicDto;
 import com.gamekeys.gameshop.dto.model.ProductDetailsDto;
 import com.gamekeys.gameshop.model.Product;
 import com.gamekeys.gameshop.model.ProductDetails;

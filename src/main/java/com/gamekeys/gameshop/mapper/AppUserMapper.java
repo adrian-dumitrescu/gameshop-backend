@@ -1,6 +1,6 @@
 package com.gamekeys.gameshop.mapper;
 
-import com.gamekeys.gameshop.dto.basic.*;
+import com.gamekeys.gameshop.dto.functional.basic.*;
 import com.gamekeys.gameshop.dto.model.AppUserDto;
 import com.gamekeys.gameshop.model.*;
 import com.gamekeys.gameshop.repository.AppUserRepository;

@@ -1,7 +1,7 @@
 package com.gamekeys.gameshop.dto.model;
 
-import com.gamekeys.gameshop.dto.basic.ProductDetailsBasicDto;
-import com.gamekeys.gameshop.dto.basic.ShoppingCartBasicDto;
+import com.gamekeys.gameshop.dto.functional.basic.ProductDetailsBasicDto;
+import com.gamekeys.gameshop.dto.functional.basic.ShoppingCartBasicDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

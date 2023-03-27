@@ -1,4 +1,4 @@
-package com.gamekeys.gameshop.dto.basic;
+package com.gamekeys.gameshop.dto.functional.basic;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Validated
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartItemBasicDto {
+public class OrderItemBasicDto {
 
     private Long id;
 
@@ -23,8 +23,8 @@ public class CartItemBasicDto {
 
     private ProductBasicDto product;
 
-    // No reference to ShoppingCartBasicDto shoppingCart;
+    // No reference to OrderDetailsBasicDto orderDetails;
 
-    // No reference to ProductBasicDto product;
+    // No reference to ProductDetailsBasicDto product;
 
 }

@@ -38,7 +38,7 @@ public class ExceptionHandling {
     // Creating a private function that is building a httpResponse everytime we are getting an exception
     // Same as the response method from the user controller
     private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String message) {
-        return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(), message.toUpperCase()), httpStatus);
+        return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(), message), httpStatus);
     }
 
     // If the exception does is not found in any of the other handlers,
@@ -91,6 +91,11 @@ public class ExceptionHandling {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<HttpResponse> userNotFoundException(UserNotFoundException exception) {
+        return createHttpResponse(BAD_REQUEST, exception.getMessage());
+    }
+
+    @ExceptionHandler(NotEnoughStockException.class)
+    public ResponseEntity<HttpResponse> notEnoughStockException(NotEnoughStockException exception) {
         return createHttpResponse(BAD_REQUEST, exception.getMessage());
     }
 
